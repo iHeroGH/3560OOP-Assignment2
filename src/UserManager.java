@@ -1,9 +1,6 @@
 package src;
 
 import java.util.Set;
-
-import javax.naming.NameNotFoundException;
-
 import java.util.HashSet;
 
 public class UserManager {

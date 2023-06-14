@@ -39,8 +39,8 @@ public class User implements UserInterface{
      * Delegates to the User(String) constructor using a random, valid, ID
      */
     public User(){
-        this(IDValidator.getInstance().findValidID());
-        UserManager.getInstance().addUser(this);
+        this.userID = IDValidator.getInstance().findValidID();
+        initializeUser();
     }
 
     /**
@@ -51,6 +51,14 @@ public class User implements UserInterface{
      */
     public User(String userID){
         this.setID(userID);
+        initializeUser();
+    }
+
+    private void initializeUser(){
+        UserManager.getInstance().addUser(this);
+        followers = new HashSet<User>();
+        following = new HashSet<User>();
+        newsFeed = new HashSet<String>();   
     }
 
     /**
@@ -60,6 +68,11 @@ public class User implements UserInterface{
     @Override
     public String getID(){
         return this.userID;
+    }
+
+    @Override
+    public String getID(String indentation){
+        return indentation + "- " + this.userID;
     }
 
     /**
@@ -148,15 +161,5 @@ public class User implements UserInterface{
      */
     public boolean equals(String userID){
         return this.userID.equals(userID);
-    }
-
-    /**
-     * A String representation of the User object
-     * 
-     * @return The User object as a String `User("userID")`
-     */
-    @Override
-    public String toString(){
-        return "User(" + this.userID + ")";
     }
 }
