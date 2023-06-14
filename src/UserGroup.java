@@ -1,13 +1,13 @@
 package src;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-public class UserGroup implements UserInterface{
+public class UserGroup implements UserInterface {
     
-    private String groupID;
+    protected String groupID;
 
-    private Set<UserInterface> userSet;
+    protected List<UserInterface> users;
 
     /**
      * The default constructor for a UserGroup
@@ -16,25 +16,29 @@ public class UserGroup implements UserInterface{
      */
     public UserGroup(){
         this.groupID = IDValidator.getInstance().findValidID();
-        this.userSet = new HashSet<UserInterface>();
+        this.users = new ArrayList<UserInterface>();
     }
 
     public UserGroup(String groupID){
         this.setID(groupID);
-        this.userSet = new HashSet<UserInterface>();
+        this.users = new ArrayList<UserInterface>();
     }
 
     @Override
     public String getID() {
-        return this.getID("");
+        return this.groupID;
+    }
+
+    public String getFormattedID(){
+        return getFormattedID("");
     }
 
     @Override
-    public String getID(String indentation){
+    public String getFormattedID(String indentation){
         String userIDs = indentation + "- " + this.groupID.toUpperCase() + "";
-        if (userSet != null){
-            for(UserInterface user : userSet){
-                userIDs += "\n" + user.getID(indentation + "  ");
+        if (users != null){
+            for(UserInterface user : users){
+                userIDs += "\n" + user.getFormattedID(indentation + "  ");
             }
         }
 
@@ -44,11 +48,34 @@ public class UserGroup implements UserInterface{
     @Override
     public void setID(String groupID) {
         IDValidator.getInstance().useID(groupID);
+
+        // Stop using old ID
+        IDValidator.getInstance().dropID(this.groupID);
+
         this.groupID = groupID;
     }
 
     public void addUser(UserInterface user){
-        this.userSet.add(user);
+        if(!this.isRelated(user)){
+            this.users.add(user);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public boolean isRelated(UserInterface other){
+        if (this.getID().equals(other.getID())){
+            return true;
+        }
+
+        for(UserInterface user : users){
+            if(user.isRelated(other) || other.isRelated(user) || user.getID().equals(other.getID())){
+                return true;
+            }
+        }
+        
+        return false;
     }
 
 }

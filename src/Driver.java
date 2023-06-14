@@ -2,33 +2,33 @@ package src;
 
 public class Driver {
     public static void main(String[] args){
-
-        UserGroup group1 = new UserGroup("Group 1");
-        group1.addUser(new User("Billy"));
-        group1.addUser(new User("Bob"));
-        group1.addUser(new User("Howard"));
-
-        UserGroup group2 = new UserGroup("Group 2");
-        group2.addUser(new User("Thomas"));
-
         
-        group1.addUser(group2);
-        UserGroup group3 = new UserGroup("Group 3");
-        group3.addUser(new User("Cowboy"));
-        group2.addUser(group3);
+        RootGroup root = RootGroup.getInstance();
+        User john = new User("john");
+        root.addUser(john);
+        root.addUser(new User("bob"));
+        root.addUser(new User("steve"));
 
-        group1.addUser(new User("Tim"));
-        group1.addUser(new User("Smith"));
+        UserGroup cs356 = new UserGroup("CS356");
+        UserGroup cs3561 = new UserGroup("CS356Session01");
 
-        group2.addUser(new User("wuhfoiewhfj"));
+        cs356.addUser(new User("stu1"));
+        cs356.addUser(new User("stu2"));
+        cs356.addUser(new User("stu3"));
 
-        UserGroup group4 = new UserGroup("Group 4");
+        cs3561.addUser(new User("stu8"));
+        cs3561.addUser(new User("stu9"));
+        cs3561.addUser(new User("stu10"));
 
-        for(int i = 0; i < 10; i++){
-            group4.addUser(new User());
-        }
-        
+        cs356.addUser(cs3561);
 
-        System.out.println(group1.getID());
+        cs356.addUser(new User("stu4"));
+
+        root.addUser(cs356);
+
+        root.addUser(new User("oostu"));
+        root.addUser(new User("ppstu2"));
+
+        System.out.println(root.getFormattedID());
     }
 }

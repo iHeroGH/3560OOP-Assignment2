@@ -65,6 +65,13 @@ public class IDValidator {
     }
 
     /**
+     * A method to remove a provided ID from the set of usedIDs
+     */
+    public void dropID(String idToRemove){
+        this.usedIDs.remove(idToRemove);
+    }
+
+    /**
      * A method to find a valid ID.
      * 
      * This method repeatedly, randomly, generates an ID until it finds one not

@@ -71,7 +71,7 @@ public class User implements UserInterface{
     }
 
     @Override
-    public String getID(String indentation){
+    public String getFormattedID(String indentation){
         return indentation + "- " + this.userID;
     }
 
@@ -86,6 +86,9 @@ public class User implements UserInterface{
     public void setID(String generatedID){
         // If the ID is already in use
         IDValidator.getInstance().useID(generatedID);
+
+        // Stop using old ID
+        IDValidator.getInstance().dropID(userID);
 
         // Otherwise use it
         this.userID = generatedID;
@@ -110,56 +113,13 @@ public class User implements UserInterface{
     }
 
     /**
-     * Retrieves the User ID's hashcode
-     * 
-     * @return The User ID's hashcode (retrieved by calling hashcode() on it).
-     */
-    @Override
-    public int hashCode(){
-        return this.userID.hashCode();
-    }
-
-    /**
-     * Checks if this User object is equal to another object
-     * 
-     * This method checks if the other object is an User object, then delegates
-     * to the equals(User) method
-     * 
-     * @param other The other object to check equality for
-     * @return Whether or not the objects are equal
-     */
-    @Override
-    public boolean equals(Object other){
-        if (!(other instanceof User)){
-            return false;
-        }
-
-        return this.equals((User) other);
-    }
-
-    /**
-     * Checks if this User object is equal to another User object
-     * 
-     * This method delegates to the equals(String) method to check if the User
-     * object equals the other's User ID
+     * Checks if this UserInterface object is equal to another UserInterface object
      * 
      * @param other The other User object to check equality for
      * @return Whether or not the objects are equal
      */
-    public boolean equals(User other){
-        return this.equals(other.userID);
-    }
-
-    /**
-     * Checks if this User object is equal to a String. They are equal if
-     * this User ID is equal to the given string
-     * 
-     * Delegates to the String.equals(String) method
-     * 
-     * @param userID The String to compare userIDs with
-     * @return Whether or not the userIDs are equal
-     */
-    public boolean equals(String userID){
-        return this.userID.equals(userID);
+    @Override
+    public boolean isRelated(UserInterface other){
+        return this.getID().equals(other.getID());
     }
 }
