@@ -1,5 +1,7 @@
 package src;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -11,28 +13,28 @@ import java.util.HashSet;
  * @author George Matta
  * @version 1.0
  */
-public class User implements UserInterface{
+public class User implements UserInterface, PosterInterface, FollowerInterface {
     
     /**
      * The unique ID of the User
      */
     private String userID;
+    
+    /**
+     * The list of users following this Poster
+     */
+    private Set<FollowerInterface> followers;
 
     /**
-     * The list of users following this user
+     * The list of users this Poster follows
      */
-    private Set<User> followers;
-
-    /**
-     * The list of users this user follows
-     */
-    private Set<User> following;
+    private Set<FollowerInterface> following;
 
     /**
      * The news feed available to this user
      */
-    private Set<String> newsFeed;
-    
+    private List<String> newsFeed;
+
     /**
      * The default constructor for a User
      * 
@@ -56,9 +58,9 @@ public class User implements UserInterface{
 
     private void initializeUser(){
         UserManager.getInstance().addUser(this);
-        followers = new HashSet<User>();
-        following = new HashSet<User>();
-        newsFeed = new HashSet<String>();   
+        followers = new HashSet<FollowerInterface>();
+        following = new HashSet<FollowerInterface>();
+        newsFeed = new ArrayList<String>();   
     }
 
     /**
@@ -68,6 +70,16 @@ public class User implements UserInterface{
     @Override
     public String getID(){
         return this.userID;
+    }
+
+    /**
+     * A String representation of the User object
+     * 
+     * @return The User formatted as User(ID)
+     */
+    @Override
+    public String toString(){
+        return "User(" + getID() + ")";
     }
 
     @Override
@@ -95,10 +107,26 @@ public class User implements UserInterface{
     }
 
     /**
+     * Checks if this UserInterface object is equal to another UserInterface object
+     * 
+     * @param other The other User object to check equality for
+     * @return Whether or not the objects are equal
+     */
+    @Override
+    public boolean isRelated(UserInterface other){
+        return this.getID().equals(other.getID());
+    }
+
+    /**
      * Follows a given user
      * @param targetID The ID of the user to follow
+     * @throws IllegalArgumentException if a user tries to follow themselves
      */
     public void followUser(String targetID){
+        if (targetID.equals(this.userID)){
+            throw new IllegalArgumentException("A User cannot follow themselves.");
+        }
+
         User user = UserManager.getInstance().findUserByID(targetID);
         this.followers.add(user);
         user.addFollower(this);
@@ -108,18 +136,44 @@ public class User implements UserInterface{
      * Adds a user to the list of followers
      * @param user The user who followed this user
      */
-    public void addFollower(User user){
-        this.following.add(user);
+    @Override
+    public void addFollower(FollowerInterface follower){
+        this.following.add(follower);
     }
 
     /**
-     * Checks if this UserInterface object is equal to another UserInterface object
-     * 
-     * @param other The other User object to check equality for
-     * @return Whether or not the objects are equal
+     * Retrieves this users followers list
+     * @return The set of users who follow this user
      */
     @Override
-    public boolean isRelated(UserInterface other){
-        return this.getID().equals(other.getID());
+    public Set<FollowerInterface> getFollowers(){
+        return this.followers;
+    }
+    
+    /** 
+     * Retrieves this user's followed users
+     * @return The set of users this user follows
+     */
+    @Override
+    public Set<FollowerInterface> getFollowing(){
+        return this.following;
+    }
+
+    @Override
+    public void post(String message){
+        this.newsFeed.add(this.userID + " (You): " + message);
+
+        for(FollowerInterface follower : followers){
+            follower.update(this.userID, message);
+        }
+    }
+
+    @Override
+    public void update(String posterID, String message){
+        this.newsFeed.add(posterID + ": " + message);
+    }
+
+    public List<String> getNewsFeed(){
+        return this.newsFeed;
     }
 }
