@@ -4,6 +4,7 @@ import src.AnalysisPackage.Analyzer;
 import src.UserPackage.RootGroup;
 import src.UserPackage.User;
 import src.UserPackage.UserGroup;
+import src.UIPackage.AdminConsole;
 
 public class Driver {
     public static void main(String[] args){
@@ -35,29 +36,32 @@ public class Driver {
         root.addUser(new User("oostu"));
         root.addUser(new User("ppstu2"));
 
-        System.out.println(root.getFormattedID());
+        // System.out.println(root.getFormattedID());
         
-        john.followUser("steve");
-        steve.followUser("john");
-        System.out.println(john.getFollowers());
-        System.out.println(john.getFollowing());
-        System.out.println(steve.getFollowers());
-        System.out.println(steve.getFollowing());
+        // john.followUser("steve");
+        // steve.followUser("john");
+        // System.out.println(john.getFollowers());
+        // System.out.println(john.getFollowing());
+        // System.out.println(steve.getFollowers());
+        // System.out.println(steve.getFollowing());
         
-        System.out.println(john.getNewsFeed());
-        System.out.println(steve.getNewsFeed());
-        john.post("I love you!");
-        steve.post("Great!");
-        System.out.println(john.getNewsFeed());
-        System.out.println(steve.getNewsFeed());
+        // System.out.println(john.getNewsFeed());
+        // System.out.println(steve.getNewsFeed());
+        // john.post("I love you!");
+        // steve.post("Great!");
+        // System.out.println(john.getNewsFeed());
+        // System.out.println(steve.getNewsFeed());
         
         
-        Analyzer an = new Analyzer();
-        root.accept(an);
-        System.out.println(an.getUserCount());
-        System.out.println(an.getUserGroupCount());
-        System.out.println(an.getNewsFeedCount());
-        System.out.println(an.getSentiment());
-    
+        // Analyzer an = new Analyzer();
+        // root.accept(an);
+        // System.out.println(an.getUserCount());
+        // System.out.println(an.getUserGroupCount());
+        // System.out.println(an.getNewsFeedCount());
+        // System.out.println(an.getSentiment());
+        
+
+        AdminConsole ac = AdminConsole.getInstance();
+
     }
 }

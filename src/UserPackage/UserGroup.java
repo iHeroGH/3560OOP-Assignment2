@@ -32,19 +32,26 @@ public class UserGroup implements UserInterface {
     }
 
     public String getFormattedID(){
-        return "Tree View\n" + getFormattedID("");
+        return getFormattedID("");
     }
 
     @Override
     public String getFormattedID(String indentation){
-        String userIDs = indentation + "- " + this.groupID.toUpperCase() + "";
+        String formattedID = indentation + "- <b>" + this.groupID+ "</b>";
+        formattedID += getTreeString(indentation);
+
+        return formattedID;
+    }
+
+    public String getTreeString(String indentation){
+        String treeString = "";
         if (users != null){
             for(UserInterface user : users){
-                userIDs += "\n" + user.getFormattedID(indentation + "  ");
+                treeString += "<br>" + user.getFormattedID(indentation + "&emsp;&emsp;");
             }
         }
 
-        return userIDs;
+        return treeString;
     }
 
     @Override

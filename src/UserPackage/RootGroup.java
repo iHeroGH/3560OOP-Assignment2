@@ -34,14 +34,10 @@ public class RootGroup extends UserGroup {
 
     @Override
     public String getFormattedID(String indentation){
-        String userIDs = indentation + this.groupID.toUpperCase() + "";
-        if (users != null){
-            for(UserInterface user : users){
-                userIDs += "\n" + user.getFormattedID(indentation + "  ");
-            }
-        }
+        String formattedID = indentation + "<b>" + this.groupID + "</b>";
+        formattedID += super.getTreeString(indentation);
 
-        return userIDs;
+        return formattedID;
     }
 
 }
