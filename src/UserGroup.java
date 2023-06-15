@@ -30,7 +30,7 @@ public class UserGroup implements UserInterface {
     }
 
     public String getFormattedID(){
-        return getFormattedID("");
+        return "Tree View\n" + getFormattedID("");
     }
 
     @Override
@@ -76,6 +76,14 @@ public class UserGroup implements UserInterface {
         }
         
         return false;
+    }
+
+    @Override
+    public void accept(AnalyzerInterface visitor){
+        visitor.visitUserGroup(this);
+        for(UserInterface user : this.users){
+            user.accept(visitor);
+        }
     }
 
 }

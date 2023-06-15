@@ -7,4 +7,5 @@ public interface UserInterface {
     public void setID(String userID);
     public boolean isRelated(UserInterface o);
 
+    public void accept(AnalyzerInterface visitor);
 }

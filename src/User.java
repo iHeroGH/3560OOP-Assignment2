@@ -176,4 +176,10 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
     public List<String> getNewsFeed(){
         return this.newsFeed;
     }
+
+    @Override
+    public void accept(AnalyzerInterface visitor){
+        visitor.visitUser(this);
+        visitor.visitNewsFeed(this.newsFeed);
+    }
 }
