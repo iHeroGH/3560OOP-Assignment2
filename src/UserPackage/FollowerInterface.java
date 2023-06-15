@@ -1,4 +1,4 @@
-package src;
+package src.UserPackage;
 
 public interface FollowerInterface {
     

@@ -1,7 +1,9 @@
-package src;
+package src.UserPackage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import src.AnalysisPackage.AnalyzerInterface;
 
 public class UserGroup implements UserInterface {
     

@@ -1,5 +1,4 @@
-package src;
-
+package src.UserPackage;
 
 public class RootGroup extends UserGroup {
 

@@ -1,8 +1,11 @@
-package src;
+package src.UserPackage;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+
+import src.AnalysisPackage.AnalyzerInterface;
+
 import java.util.HashSet;
 
 /**

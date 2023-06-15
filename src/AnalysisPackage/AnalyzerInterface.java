@@ -1,6 +1,9 @@
-package src;
+package src.AnalysisPackage;
 
 import java.util.List;
+
+import src.UserPackage.User;
+import src.UserPackage.UserGroup;
 
 public interface AnalyzerInterface {
     

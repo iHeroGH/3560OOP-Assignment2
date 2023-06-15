@@ -1,10 +1,14 @@
-package src;
+package src.AnalysisPackage;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
 
 import java.util.Set;
+
+import src.UserPackage.User;
+import src.UserPackage.UserGroup;
+
 import java.util.HashSet;
 import java.util.List;
 
@@ -16,7 +20,7 @@ public class Analyzer implements AnalyzerInterface{
     private int positiveWordsCount;
 
     private static Set<String> positiveWords;
-    private final String POSITIVE_WORDS_FILE_PATH = "src\\PostivieWords.txt";
+    private final String POSITIVE_WORDS_FILE_PATH = "src\\AnalysisPackage\\PostivieWords.txt";
 
     public Analyzer(){
         userCount = 0;

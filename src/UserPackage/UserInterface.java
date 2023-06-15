@@ -1,4 +1,6 @@
-package src;
+package src.UserPackage;
+
+import src.AnalysisPackage.AnalyzerInterface;
 
 public interface UserInterface {
     
