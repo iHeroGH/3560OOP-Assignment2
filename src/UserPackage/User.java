@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import src.AnalysisPackage.AnalyzerInterface;
+import src.UserPackage.ManagerPackage.UserManager;
+import src.UserPackage.ObserverPackage.FollowerInterface;
+import src.UserPackage.ObserverPackage.PosterInterface;
 
 import java.util.HashSet;
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import src.AnalysisPackage.AnalyzerInterface;
+import src.UserPackage.ManagerPackage.UserGroupManager;
 
 public class UserGroup implements UserInterface {
     
