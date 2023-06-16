@@ -1,11 +1,14 @@
 package src.UIPackage;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -15,9 +18,11 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Utilities;
 
 import src.UserPackage.RootGroup;
-import src.UserPackage.UserGroupManager;
+import src.UserPackage.UserFactory;
+import src.UserPackage.UserGroup;
 import src.UserPackage.UserInterface;
-import src.UserPackage.UserManager;
+import src.UserPackage.ManagerPackage.UserGroupManager;
+import src.UserPackage.ManagerPackage.UserManager;
 
 public class AdminConsole {
     
@@ -31,6 +36,7 @@ public class AdminConsole {
     private RootGroup root;
 
     private JTextPane treeViewTextPane;
+    private UserGroup lastSelected;
 
     public final static int WIDTH = 481;
     public final static int HEIGHT = 786;
@@ -56,7 +62,8 @@ public class AdminConsole {
     private AdminConsole(){
         adminFrame = new JFrame("Mini-Twitter Admin Console");
         root = RootGroup.getInstance();
-        
+        lastSelected = root;
+
         JPanel adminContainer = getAdminContainer();
         adminContainer.add(getTreeViewPane());
         adminContainer.add(getUserManagementPanel());
@@ -77,22 +84,34 @@ public class AdminConsole {
     }
 
     private JScrollPane getTreeViewPane(){
-        JTextPane treeViewTextPane = new JTextPane();
+        this.treeViewTextPane = new JTextPane();;
         treeViewTextPane.setContentType("text/html");
         treeViewTextPane.setEditable(false);
-        treeViewTextPane.setText(
-            "<font size = +1 face = \"" + DEFAULT_FONT_NAME + "\">" + 
-            root.getFormattedID().replaceAll("\\*\\*\\*", "</b>")
-                                .replaceAll("\\*\\*", "<b>")
-                                .replaceAll("\n", "<br>")
-                                .replaceAll("    ", "&emsp;&emsp;") + 
-            "</font>"
-        );
         treeViewTextPane.setBackground(BACKGROUND_COLOR);
+        setTreeViewText();
 
-        this.treeViewTextPane = treeViewTextPane;
+        treeViewTextPane.addMouseListener(
+            new MouseListener() {                
+                @Override
+                public void mouseClicked(MouseEvent e){
+                    lastSelected = null;
+                }
 
-        JScrollPane treeViewPane = new JScrollPane(treeViewTextPane);
+                @Override
+                public void mousePressed(MouseEvent e){}
+                @Override
+                public void mouseReleased(MouseEvent e){}
+                @Override
+                public void mouseEntered(MouseEvent e){}
+                @Override
+                public void mouseExited(MouseEvent e){}
+            }
+        );
+
+        JPanel noWrapPanel = new JPanel(new BorderLayout());
+        noWrapPanel.add(treeViewTextPane);
+
+        JScrollPane treeViewPane = new JScrollPane(noWrapPanel);
         treeViewPane.setBackground(BACKGROUND_COLOR);
         treeViewPane.setBorder(new CompoundBorder(
                                     BorderFactory.createEmptyBorder(
@@ -101,12 +120,28 @@ public class AdminConsole {
                                     createTitledBorder("Tree View", Color.BLUE)
                                 )
                             );
-        treeViewPane.setPreferredSize(new Dimension(WIDTH, 55*HEIGHT/100));
+        treeViewPane.setPreferredSize(new Dimension(WIDTH/100, 55*HEIGHT/100));
+        treeViewPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        treeViewPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         return treeViewPane;
     }
 
+    private void setTreeViewText(){
+        this.treeViewTextPane.setText(
+            "<font size = +1 face = \"" + DEFAULT_FONT_NAME + "\">" + 
+            root.getFormattedID().replaceAll("\\*\\*\\*", "</b>")
+                                .replaceAll("\\*\\*", "<b>")
+                                .replaceAll("\n", "<br>")
+                                .replaceAll("    ", "&emsp;") + 
+            "</font>"
+        );
+    }
+
     private JPanel getUserManagementPanel(){
+        JTextField idTextField = new JTextField();
+        idTextField.setFont(new Font(DEFAULT_FONT_NAME, 0, 15));
+
         JPanel userManagementPanel = new JPanel();
         userManagementPanel.setBackground(BACKGROUND_COLOR);
         userManagementPanel.setBorder(new CompoundBorder(
@@ -125,13 +160,11 @@ public class AdminConsole {
         userViewButton.addActionListener(
             new ActionListener(){
                 public void actionPerformed(ActionEvent e){
-                    String selectedID = getSelectedUserID();
+                    String selectedID = getSelectedID();
                     try{
                         UserInterface selectedUser = UserManager.getInstance()
                                                         .findItemByID(selectedID);
                         
-                        System.out.println(selectedUser);
-
                     } catch (IllegalArgumentException ex){}
                 }
             }
@@ -144,34 +177,39 @@ public class AdminConsole {
         addUserButton.addActionListener(
             new ActionListener(){
                 public void actionPerformed(ActionEvent e){
-                    String selectedID = getSelectedUserID();
-                    try{
-                        UserInterface selectedGroup = UserGroupManager.getInstance()
-                                                        .findItemByID(selectedID);
-                        
-                        System.out.println(selectedGroup);
+                    UserGroup selectedGroup = getSelectedGroup();
+                    if (selectedGroup == null) return;
+                    
+                    String typedID = getTypedText(idTextField);
+                    if  (typedID.length() == 0) return;
 
-                    } catch (IllegalArgumentException ex){}
+                    try{
+                        selectedGroup.addUser(UserFactory.createUser(typedID));
+                    } catch (IllegalArgumentException ex) { return; }
+                    
+                    setTreeViewText();
                 }
             }
         );
         userManagementPanel.add(addUserButton);
-        
-        JTextField idTextField = new JTextField();
-        idTextField.setFont(new Font(DEFAULT_FONT_NAME, 0, 15));
+
         userManagementPanel.add(idTextField);
 
         JButton addUserGroupButton = new JButton("Add User Group");
         addUserGroupButton.addActionListener(
             new ActionListener(){
                 public void actionPerformed(ActionEvent e){
-                    String selectedID = getSelectedUserID();
+                    UserGroup selectedGroup = getSelectedGroup();
+                    if (selectedGroup == null) return;
+                    
+                    String typedID = getTypedText(idTextField);
+                    if  (typedID.length() == 0) return;
+                    
                     try{
-                        UserInterface selectedGroup = UserGroupManager.getInstance()
-                                                        .findItemByID(selectedID);
-                        
-                        System.out.println(selectedGroup);
-                    } catch (IllegalArgumentException ex){}
+                        selectedGroup.addUser(UserFactory.createUserGroup(typedID));
+                    } catch (IllegalArgumentException ex) { return; }
+                    
+                    setTreeViewText();
                 }
             }
         );
@@ -182,7 +220,27 @@ public class AdminConsole {
         return userManagementPanel;
     }
 
-    public String getSelectedUserID(){
+    public String getTypedText(JTextField idTextField){
+        String typedID = idTextField.getText();
+        idTextField.setText("");
+
+        return typedID;
+    }
+
+    public UserGroup getSelectedGroup(){
+        if (lastSelected != null){
+            return lastSelected;
+        }
+
+        String selectedID = getSelectedID();
+        try{
+            lastSelected = UserGroupManager.getInstance()
+                                    .findItemByID(selectedID);
+            return lastSelected;
+        } catch (IllegalArgumentException ex){ return null; }
+    }
+
+    public String getSelectedID(){
         int rowNum = getSelectedRow();
         String[] lines = root.getFormattedID().split("\n\s+- ");
 
@@ -190,12 +248,12 @@ public class AdminConsole {
             return lines[rowNum].replaceAll("\\*", "");
         }
 
-        return "";
+        return root.getID();
     }
 
     public int getSelectedRow(){
-        int caretPosition = treeViewTextPane.getCaretPosition();
         int rowNum = 0;
+        int caretPosition = treeViewTextPane.getCaretPosition();
         try {
             for (int offset = caretPosition; offset > 0;) {
                 offset = Utilities.getRowStart(treeViewTextPane, offset) - 1;
