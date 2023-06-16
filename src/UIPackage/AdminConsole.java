@@ -17,6 +17,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Utilities;
 
+import src.AnalysisPackage.Analyzer;
+import src.AnalysisPackage.AnalyzerInterface;
 import src.UserPackage.RootGroup;
 import src.UserPackage.UserFactory;
 import src.UserPackage.UserGroup;
@@ -37,6 +39,11 @@ public class AdminConsole {
 
     private JTextPane treeViewTextPane;
     private UserGroup lastSelected;
+
+    private JLabel userCountLabel;
+    private JLabel groupCountLabel;
+    private JLabel messageCountLabel;
+    private JLabel sentimentValueLabel;
 
     public final static int WIDTH = 481;
     public final static int HEIGHT = 786;
@@ -63,6 +70,15 @@ public class AdminConsole {
         adminFrame = new JFrame("Mini-Twitter Admin Console");
         root = RootGroup.getInstance();
         lastSelected = root;
+
+        userCountLabel = new JLabel("", JLabel.CENTER);
+        userCountLabel.setFont(new Font(DEFAULT_FONT_NAME, 1, 15));
+        groupCountLabel = new JLabel("", JLabel.CENTER);
+        groupCountLabel.setFont(new Font(DEFAULT_FONT_NAME, 1, 15));
+        messageCountLabel = new JLabel("", JLabel.CENTER);
+        messageCountLabel.setFont(new Font(DEFAULT_FONT_NAME, 1, 15));
+        sentimentValueLabel = new JLabel("", JLabel.CENTER);
+        sentimentValueLabel.setFont(new Font(DEFAULT_FONT_NAME, 1, 15));
 
         JPanel adminContainer = getAdminContainer();
         adminContainer.add(getTreeViewPane());
@@ -183,6 +199,7 @@ public class AdminConsole {
 
                     try{
                         selectedGroup.addUser(UserFactory.createUser(typedID));
+                        updateLabels();
                     } catch (IllegalArgumentException ex) { return; }
                     
                     setTreeViewText();
@@ -204,7 +221,10 @@ public class AdminConsole {
                     if  (typedID.length() == 0) return;
                     
                     try{
-                        selectedGroup.addUser(UserFactory.createUserGroup(typedID));
+                        UserGroup createdUser = UserFactory.createUserGroup(typedID);
+                        selectedGroup.addUser(createdUser);
+                        lastSelected = createdUser;
+                        updateLabels();
                     } catch (IllegalArgumentException ex) { return; }
                     
                     setTreeViewText();
@@ -271,7 +291,26 @@ public class AdminConsole {
         analysisPanel.setBackground(BACKGROUND_COLOR);
         analysisPanel.setPreferredSize(PANEL_DIMENSION);
 
+        analysisPanel.setLayout(new GridLayout(2, 2, 5, 5));
+
+        updateLabels();
+
+        analysisPanel.add(userCountLabel);
+        analysisPanel.add(groupCountLabel);
+        analysisPanel.add(messageCountLabel);
+        analysisPanel.add(sentimentValueLabel);
+
         return analysisPanel;
+    }
+
+    private void updateLabels(){
+        Analyzer analyzer = new Analyzer();
+        
+        root.accept(analyzer);
+        userCountLabel.setText("User Count: " + analyzer.getUserCount());
+        groupCountLabel.setText("Group Count: " + analyzer.getUserGroupCount());
+        messageCountLabel.setText("Msg Count: " + analyzer.getNewsFeedCount());
+        sentimentValueLabel.setText("Sentiment: " + analyzer.getSentiment());
     }
 
     private static TitledBorder createTitledBorder(String title, Color color){

@@ -2,19 +2,19 @@ package src.UserPackage;
 
 public class UserFactory {
     
-    public static UserInterface createUser(){
+    public static User createUser(){
         return new User();
     }
 
-    public static UserInterface createUser(String userID){
+    public static User createUser(String userID){
         return new User(userID);
     }
 
-    public static UserInterface createUserGroup(){
+    public static UserGroup createUserGroup(){
         return new UserGroup();
     }
 
-    public static UserInterface createUserGroup(String groupID){
+    public static UserGroup createUserGroup(String groupID){
         return new UserGroup(groupID);
     }
 

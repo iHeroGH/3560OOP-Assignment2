@@ -11,4 +11,9 @@ public interface AnalyzerInterface {
     public void visitUserGroup(UserGroup userGroup);
     public void visitNewsFeed(List<String> newsFeed);
 
+    public int getUserCount();
+    public int getUserGroupCount();
+    public int getNewsFeedCount();
+    public float getSentiment();
+    
 }
