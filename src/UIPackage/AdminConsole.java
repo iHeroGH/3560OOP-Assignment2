@@ -121,8 +121,6 @@ public class AdminConsole {
                                 )
                             );
         treeViewPane.setPreferredSize(new Dimension(WIDTH/100, 55*HEIGHT/100));
-        treeViewPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        treeViewPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         return treeViewPane;
     }
