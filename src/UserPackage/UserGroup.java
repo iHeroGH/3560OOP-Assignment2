@@ -37,7 +37,7 @@ public class UserGroup implements UserInterface {
 
     @Override
     public String getFormattedID(String indentation){
-        String formattedID = indentation + "- <b>" + this.groupID+ "</b>";
+        String formattedID = indentation + "- **" + this.groupID+ "***";
         formattedID += getTreeString(indentation);
 
         return formattedID;
@@ -47,7 +47,7 @@ public class UserGroup implements UserInterface {
         String treeString = "";
         if (users != null){
             for(UserInterface user : users){
-                treeString += "<br>" + user.getFormattedID(indentation + "&emsp;&emsp;");
+                treeString += "\n" + user.getFormattedID(indentation + "    ");
             }
         }
 

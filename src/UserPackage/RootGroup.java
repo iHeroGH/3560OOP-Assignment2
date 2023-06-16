@@ -34,7 +34,7 @@ public class RootGroup extends UserGroup {
 
     @Override
     public String getFormattedID(String indentation){
-        String formattedID = indentation + "<b>" + this.groupID + "</b>";
+        String formattedID = indentation + "**" + this.groupID + "***";
         formattedID += super.getTreeString(indentation);
 
         return formattedID;
