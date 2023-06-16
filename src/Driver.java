@@ -1,6 +1,5 @@
 package src;
 
-import src.AnalysisPackage.Analyzer;
 import src.UserPackage.RootGroup;
 import src.UserPackage.User;
 import src.UserPackage.UserGroup;
@@ -61,7 +60,7 @@ public class Driver {
         // System.out.println(an.getSentiment());
         
 
-        AdminConsole ac = AdminConsole.getInstance();
+        AdminConsole.getInstance();
 
     }
 }

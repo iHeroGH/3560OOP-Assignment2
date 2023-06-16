@@ -1,6 +1,8 @@
-package src.UserPackage;
+package src.UserPackage.ManagerPackage;
 
 import java.util.HashSet;
+
+import src.UserPackage.User;
 
 public class UserManager extends AbstractManager<User> {
     
