@@ -60,7 +60,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
     }
 
     private void initializeUser(){
-        UserManager.getInstance().addUser(this);
+        UserManager.getInstance().addItem(this);
         followers = new HashSet<FollowerInterface>();
         following = new HashSet<FollowerInterface>();
         newsFeed = new ArrayList<String>();   
@@ -130,7 +130,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
             throw new IllegalArgumentException("A User cannot follow themselves.");
         }
 
-        User user = UserManager.getInstance().findUserByID(targetID);
+        User user = UserManager.getInstance().findItemByID(targetID);
         this.followers.add(user);
         user.addFollower(this);
     }   

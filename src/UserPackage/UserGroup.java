@@ -18,12 +18,17 @@ public class UserGroup implements UserInterface {
      */
     public UserGroup(){
         this.groupID = IDValidator.getInstance().findValidID();
-        this.users = new ArrayList<UserInterface>();
+        initializeUserGroup();
     }
 
     public UserGroup(String groupID){
         this.setID(groupID);
-        this.users = new ArrayList<UserInterface>();
+        initializeUserGroup();
+    }
+
+    private void initializeUserGroup(){
+        UserGroupManager.getInstance().addItem(this);
+        this.users = new ArrayList<UserInterface>(); 
     }
 
     @Override

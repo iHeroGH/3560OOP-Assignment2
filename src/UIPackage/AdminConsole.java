@@ -12,15 +12,12 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.Utilities;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.parser.*;
 
 import src.UserPackage.RootGroup;
+import src.UserPackage.UserGroupManager;
+import src.UserPackage.UserInterface;
+import src.UserPackage.UserManager;
 
 public class AdminConsole {
     
@@ -126,25 +123,16 @@ public class AdminConsole {
         
         JButton userViewButton = new JButton("User View");
         userViewButton.addActionListener(
-            new ActionListener() {
+            new ActionListener(){
                 public void actionPerformed(ActionEvent e){
-                    int caretPosition = treeViewTextPane.getCaretPosition();
-                    int rowNum = 0;
-                    try {
-                        for (int offset = caretPosition; offset > 0;) {
-                            offset = Utilities.getRowStart(treeViewTextPane, offset) - 1;
-                            rowNum++;
-                        }
-                    } catch (BadLocationException ex){
-                        ex.printStackTrace();
-                    }
-                    rowNum--;
+                    String selectedID = getSelectedUserID();
+                    try{
+                        UserInterface selectedUser = UserManager.getInstance()
+                                                        .findItemByID(selectedID);
+                        
+                        System.out.println(selectedUser);
 
-                    String[] lines = root.getFormattedID().split("\n\s+- ");
-
-                    if (lines.length != 0 && rowNum != 0 && rowNum < lines.length){
-                        System.out.println(lines[rowNum]);
-                    }
+                    } catch (IllegalArgumentException ex){}
                 }
             }
         );
@@ -153,6 +141,20 @@ public class AdminConsole {
         userManagementPanel.add(new JLabel());
 
         JButton addUserButton = new JButton("Add User");
+        addUserButton.addActionListener(
+            new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    String selectedID = getSelectedUserID();
+                    try{
+                        UserInterface selectedGroup = UserGroupManager.getInstance()
+                                                        .findItemByID(selectedID);
+                        
+                        System.out.println(selectedGroup);
+
+                    } catch (IllegalArgumentException ex){}
+                }
+            }
+        );
         userManagementPanel.add(addUserButton);
         
         JTextField idTextField = new JTextField();
@@ -160,11 +162,51 @@ public class AdminConsole {
         userManagementPanel.add(idTextField);
 
         JButton addUserGroupButton = new JButton("Add User Group");
+        addUserGroupButton.addActionListener(
+            new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    String selectedID = getSelectedUserID();
+                    try{
+                        UserInterface selectedGroup = UserGroupManager.getInstance()
+                                                        .findItemByID(selectedID);
+                        
+                        System.out.println(selectedGroup);
+                    } catch (IllegalArgumentException ex){}
+                }
+            }
+        );
         userManagementPanel.add(addUserGroupButton);
 
 
         userManagementPanel.setPreferredSize(PANEL_DIMENSION);
         return userManagementPanel;
+    }
+
+    public String getSelectedUserID(){
+        int rowNum = getSelectedRow();
+        String[] lines = root.getFormattedID().split("\n\s+- ");
+
+        if (lines.length != 0 && rowNum >= 0 && rowNum < lines.length){
+            return lines[rowNum].replaceAll("\\*", "");
+        }
+
+        return "";
+    }
+
+    public int getSelectedRow(){
+        int caretPosition = treeViewTextPane.getCaretPosition();
+        int rowNum = 0;
+        try {
+            for (int offset = caretPosition; offset > 0;) {
+                offset = Utilities.getRowStart(treeViewTextPane, offset) - 1;
+                rowNum++;
+            }
+        } catch (BadLocationException ex){
+            ex.printStackTrace();
+        }
+        rowNum--;
+
+        return rowNum;
     }
 
     private JPanel getAnalysisPanel(){

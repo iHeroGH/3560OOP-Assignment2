@@ -46,8 +46,17 @@ public class IDValidator {
      * @param idToCheck The ID to check use for
      * @return A boolean denoting whether or not the ID is in use
      */
-    public boolean checkID(String idToCheck){
+    public boolean checkExists(String idToCheck){
         return this.usedIDs.contains(idToCheck);
+    }
+
+    /**
+     * A method to check if a provided ID is valid (doesn't contain *)
+     * @param idToCheck The ID to check use for
+     * @return A boolean denoting whether or not the ID is valid
+     */
+    public boolean checkValid(String idToCheck){
+        return !idToCheck.contains("*");
     }
 
     /**
@@ -56,12 +65,18 @@ public class IDValidator {
      * @throws IllegalArgumentException if the ID is already in use
      */
     public void useID(String idToAdd){
-        if (!checkID(idToAdd)){
-            this.usedIDs.add(idToAdd);
-            return;
+        boolean exists = checkExists(idToAdd);
+        boolean valid = checkValid(idToAdd);
+
+        if(exists){
+            throw new IllegalArgumentException("The provided ID is already in use.");
         }
 
-        throw new IllegalArgumentException("The provided ID is already in use.");
+        if (!valid){
+            throw new IllegalArgumentException("IDs cannot contain the * character.");
+        }
+
+        this.usedIDs.add(idToAdd);
     }
 
     /**
@@ -83,7 +98,7 @@ public class IDValidator {
         
         // Keep generating IDs until one is found
         String generatedID = generateRandomID();
-        while (this.checkID(generatedID)){
+        while (this.checkExists(generatedID)){
             generatedID = generateRandomID();
         }
         
