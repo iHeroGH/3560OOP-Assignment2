@@ -2,7 +2,6 @@ package src.UIPackage;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -24,10 +23,19 @@ import src.UserPackage.ObserverPackage.FollowerInterface;
 public class UserView extends JFrame{
     
     private User user;
+    private JTextPane postsText;
+    private JTextPane followersText;
+    private JTextPane followingText;
 
     public UserView(User user){
         super("User View: " + user.getID());
         this.user = user;
+
+        UserViewManager.getInstance().addItem(this);
+
+        postsText = new JTextPane();
+        followersText = new JTextPane();
+        followingText = new JTextPane();
 
         JPanel userViewContainer = getAdminContainer();
         userViewContainer.add(getFollowButtons());
@@ -38,6 +46,10 @@ public class UserView extends JFrame{
         this.add(userViewContainer);
         this.setSize(UIConstants.SCREEN_WIDTH, UIConstants.SCREEN_HEIGHT);
         this.setVisible(true);
+    }
+
+    public User getUser(){
+        return user;
     }
 
     private JPanel getAdminContainer(){
@@ -68,33 +80,21 @@ public class UserView extends JFrame{
 
     private JPanel getFollowView(){
         JPanel followManagerPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-
-        JTextPane followers = new JTextPane();
-        JTextPane following = new JTextPane();
         
-        followers.setContentType("text/html");
-        followers.setEditable(false);
+        followersText.setContentType("text/html");
+        followersText.setEditable(false);
 
-        following.setContentType("text/html");
-        following.setEditable(false);
+        followingText.setContentType("text/html");
+        followingText.setEditable(false);
         
-        followers.setText(
-            "<font face = \"" + UIConstants.DEFAULT_FONT_NAME + "\">" + 
-            getFollowers() + 
-            "</font>"
-        );
-
-        following.setText(
-            "<font face = \"" + UIConstants.DEFAULT_FONT_NAME + "\">" + 
-            getFollowing() + 
-            "</font>"
-        );
+        updateFollowers();
+        updateFollowing();
         
         JPanel followersNoWrapPanel = new JPanel(new BorderLayout());
-        followersNoWrapPanel.add(followers);
+        followersNoWrapPanel.add(followersText);
 
         JPanel followingNoWrapPanel = new JPanel(new BorderLayout());
-        followingNoWrapPanel.add(following);
+        followingNoWrapPanel.add(followingText);
         
         JScrollPane followersViewPane = new JScrollPane(followersNoWrapPanel);
         followersViewPane.setBorder(new CompoundBorder(
@@ -173,14 +173,10 @@ public class UserView extends JFrame{
                                 );
         postViewPanel.setPreferredSize(UIConstants.BIG_PANEL_DIMENSION);
 
-        JTextPane postsText = new JTextPane();
+        postsText = new JTextPane();
         postsText.setContentType("text/html");
         postsText.setEditable(false);
-        postsText.setText(
-                    "<font face = \"" + UIConstants.DEFAULT_FONT_NAME + "\">" + 
-                    getPosts() + 
-                    "</font>"
-                );
+        updatePosts();
 
         JScrollPane postsViewPane = new JScrollPane(postsText);
         postsViewPane.setBackground(UIConstants.BACKGROUND_COLOR);
@@ -199,5 +195,26 @@ public class UserView extends JFrame{
 
         return posts;
     }
+
+    private void updateFollowers(){
+        setUpdateableText(followersText, getFollowers());
+    }
+
+    private void updateFollowing(){
+        setUpdateableText(followingText, getFollowing());
+    }
+
+    private void updatePosts(){
+        setUpdateableText(postsText, getPosts());
+    }
+
+    private static void setUpdateableText(JTextPane textPane, String newText){
+        textPane.setText(
+                    "<font face = \"" + UIConstants.DEFAULT_FONT_NAME + "\">" + 
+                    newText + 
+                    "</font>"
+                );
+    }
+
 
 }
