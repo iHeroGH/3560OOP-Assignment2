@@ -126,7 +126,8 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
     /**
      * Follows a given user
      * @param targetID The ID of the user to follow
-     * @throws IllegalArgumentException if a user tries to follow themselves
+     * @throws IllegalArgumentException if a user tries to follow themselves 
+     *                                  or the user wasn't found
      */
     public void followUser(String targetID){
         if (targetID.equals(this.userID)){
@@ -134,7 +135,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
         }
 
         User user = UserManager.getInstance().findItemByID(targetID);
-        this.followers.add(user);
+        this.following.add(user);
         user.addFollower(this);
     }   
 
@@ -144,7 +145,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
      */
     @Override
     public void addFollower(FollowerInterface follower){
-        this.following.add(follower);
+        this.followers.add(follower);
     }
 
     /**

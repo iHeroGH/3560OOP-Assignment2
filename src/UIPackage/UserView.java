@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -18,6 +20,9 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
 import src.UserPackage.User;
+import src.UserPackage.UserFactory;
+import src.UserPackage.UserGroup;
+import src.UserPackage.ManagerPackage.UserManager;
 import src.UserPackage.ObserverPackage.FollowerInterface;
 
 public class UserView extends JFrame{
@@ -69,6 +74,27 @@ public class UserView extends JFrame{
         JTextField idTextField = new JTextField();
         idTextField.setFont(new Font(UIConstants.DEFAULT_FONT_NAME, 0, 15));
         JButton followUserButton = new JButton("Follow User");
+        followUserButton.addActionListener(
+            new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    String typedID = getTypedText(idTextField);
+                    if  (typedID.length() == 0) return;
+                    
+                    try{
+                        user.followUser(typedID);
+                        updateFollowing();
+                        
+                        for(UserView userView : UserViewManager.getInstance().getUserItemSet()){
+                            if (UserViewManager.getInstance().compareItems(userView, typedID)){
+                                userView.updateFollowers();
+                            }
+                        }
+
+                    } catch (IllegalArgumentException ex) { return; }
+                    
+                }
+            }
+        );
 
         followButtonsPanel.add(idTextField);
         followButtonsPanel.add(followUserButton);
@@ -197,15 +223,15 @@ public class UserView extends JFrame{
     }
 
     private void updateFollowers(){
-        setUpdateableText(followersText, getFollowers());
+        setUpdateableText(this.followersText, getFollowers());
     }
 
     private void updateFollowing(){
-        setUpdateableText(followingText, getFollowing());
+        setUpdateableText(this.followingText, getFollowing());
     }
 
     private void updatePosts(){
-        setUpdateableText(postsText, getPosts());
+        setUpdateableText(this.postsText, getPosts());
     }
 
     private static void setUpdateableText(JTextPane textPane, String newText){
@@ -216,5 +242,10 @@ public class UserView extends JFrame{
                 );
     }
 
+    public static String getTypedText(JTextField idTextField){
+        String typedID = idTextField.getText();
+        idTextField.setText("");
 
+        return typedID;
+    }
 }

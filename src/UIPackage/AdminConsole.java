@@ -215,7 +215,7 @@ public class AdminConsole extends JFrame{
         return userManagementPanel;
     }
 
-    public String getTypedText(JTextField idTextField){
+    public static String getTypedText(JTextField idTextField){
         String typedID = idTextField.getText();
         idTextField.setText("");
 

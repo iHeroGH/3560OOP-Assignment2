@@ -37,8 +37,8 @@ public class Driver {
 
         // System.out.println(root.getFormattedID());
         
-        john.followUser("steve");
-        steve.followUser("john");
+        // john.followUser("steve");
+        // steve.followUser("john");
         // System.out.println(john.getFollowers());
         // System.out.println(john.getFollowing());
         // System.out.println(steve.getFollowers());
