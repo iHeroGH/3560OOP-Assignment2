@@ -13,43 +13,29 @@ import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Utilities;
 
-import src.AnalysisPackage.Analyzer;
-import src.AnalysisPackage.AnalyzerInterface;
 import src.UserPackage.RootGroup;
+import src.UserPackage.User;
 import src.UserPackage.UserFactory;
 import src.UserPackage.UserGroup;
-import src.UserPackage.UserInterface;
 import src.UserPackage.ManagerPackage.UserGroupManager;
 import src.UserPackage.ManagerPackage.UserManager;
 
-public class AdminConsole {
+public class AdminConsole extends JFrame{
     
-    JFrame adminFrame;
-
     /**
      * The single instance of this Singleton IDValidator
      */
-    public static AdminConsole instance = null;
+    private static AdminConsole instance = null;
     
     private RootGroup root;
 
     private JTextPane treeViewTextPane;
     private UserGroup lastSelected;
 
-    private JLabel userCountLabel;
-    private JLabel groupCountLabel;
-    private JLabel messageCountLabel;
-    private JLabel sentimentValueLabel;
-
-    public final static int WIDTH = 481;
-    public final static int HEIGHT = 786;
-    public final static String DEFAULT_FONT_NAME = "Verdana";
-    public final static Color BACKGROUND_COLOR = Color.WHITE;
-    public final static Dimension PANEL_DIMENSION = new Dimension(WIDTH, HEIGHT/15);
+    private AnalysisLabels analysisLabels;
 
     /**
      * Retrieves the single instance created of the AdminConsole
@@ -67,32 +53,25 @@ public class AdminConsole {
      * A private constructor since this class is a Singleton
      */
     private AdminConsole(){
-        adminFrame = new JFrame("Mini-Twitter Admin Console");
+        super("Mini-Twitter Admin Console");
+        analysisLabels = new AnalysisLabels();
+        
         root = RootGroup.getInstance();
         lastSelected = root;
-
-        userCountLabel = new JLabel("", JLabel.CENTER);
-        userCountLabel.setFont(new Font(DEFAULT_FONT_NAME, 1, 15));
-        groupCountLabel = new JLabel("", JLabel.CENTER);
-        groupCountLabel.setFont(new Font(DEFAULT_FONT_NAME, 1, 15));
-        messageCountLabel = new JLabel("", JLabel.CENTER);
-        messageCountLabel.setFont(new Font(DEFAULT_FONT_NAME, 1, 15));
-        sentimentValueLabel = new JLabel("", JLabel.CENTER);
-        sentimentValueLabel.setFont(new Font(DEFAULT_FONT_NAME, 1, 15));
 
         JPanel adminContainer = getAdminContainer();
         adminContainer.add(getTreeViewPane());
         adminContainer.add(getUserManagementPanel());
         adminContainer.add(getAnalysisPanel());
         
-        adminFrame.add(adminContainer);
-        adminFrame.setSize(WIDTH, HEIGHT);
-        adminFrame.setVisible(true);
+        this.add(adminContainer);
+        this.setSize(UIConstants.SCREEN_WIDTH, UIConstants.SCREEN_HEIGHT);
+        this.setVisible(true);
     }
 
     private JPanel getAdminContainer(){
         JPanel adminContainer = new JPanel();
-        adminContainer.setBackground(BACKGROUND_COLOR);
+        adminContainer.setBackground(UIConstants.BACKGROUND_COLOR);
         adminContainer.setLayout(new BoxLayout(adminContainer, BoxLayout.Y_AXIS));
         adminContainer.setBorder(new EmptyBorder(15, 15, 15, 15));
 
@@ -100,10 +79,10 @@ public class AdminConsole {
     }
 
     private JScrollPane getTreeViewPane(){
-        this.treeViewTextPane = new JTextPane();;
+        this.treeViewTextPane = new JTextPane();
         treeViewTextPane.setContentType("text/html");
         treeViewTextPane.setEditable(false);
-        treeViewTextPane.setBackground(BACKGROUND_COLOR);
+        treeViewTextPane.setBackground(UIConstants.BACKGROUND_COLOR);
         setTreeViewText();
 
         treeViewTextPane.addMouseListener(
@@ -128,22 +107,22 @@ public class AdminConsole {
         noWrapPanel.add(treeViewTextPane);
 
         JScrollPane treeViewPane = new JScrollPane(noWrapPanel);
-        treeViewPane.setBackground(BACKGROUND_COLOR);
+        treeViewPane.setBackground(UIConstants.BACKGROUND_COLOR);
         treeViewPane.setBorder(new CompoundBorder(
                                     BorderFactory.createEmptyBorder(
                                         0, 0, 5, 0
                                         ),
-                                    createTitledBorder("Tree View", Color.BLUE)
+                                    UIConstants.createTitledBorder("Tree View", Color.BLUE)
                                 )
                             );
-        treeViewPane.setPreferredSize(new Dimension(WIDTH/100, 55*HEIGHT/100));
+        treeViewPane.setPreferredSize(UIConstants.BIG_PANEL_DIMENSION);
 
         return treeViewPane;
     }
 
     private void setTreeViewText(){
         this.treeViewTextPane.setText(
-            "<font size = +1 face = \"" + DEFAULT_FONT_NAME + "\">" + 
+            "<font size = +1 face = \"" + UIConstants.DEFAULT_FONT_NAME + "\">" + 
             root.getFormattedID().replaceAll("\\*\\*\\*", "</b>")
                                 .replaceAll("\\*\\*", "<b>")
                                 .replaceAll("\n", "<br>")
@@ -154,15 +133,15 @@ public class AdminConsole {
 
     private JPanel getUserManagementPanel(){
         JTextField idTextField = new JTextField();
-        idTextField.setFont(new Font(DEFAULT_FONT_NAME, 0, 15));
+        idTextField.setFont(new Font(UIConstants.DEFAULT_FONT_NAME, 0, 15));
 
         JPanel userManagementPanel = new JPanel();
-        userManagementPanel.setBackground(BACKGROUND_COLOR);
+        userManagementPanel.setBackground(UIConstants.BACKGROUND_COLOR);
         userManagementPanel.setBorder(new CompoundBorder(
                                         BorderFactory.createEmptyBorder(
                                             0, 0, 5, 0
                                         ),
-                                        createTitledBorder("User Management", Color.RED)
+                                        UIConstants.createTitledBorder("User Management", Color.RED)
                                     )
                                 );
         
@@ -174,12 +153,10 @@ public class AdminConsole {
         userViewButton.addActionListener(
             new ActionListener(){
                 public void actionPerformed(ActionEvent e){
-                    String selectedID = getSelectedID();
-                    try{
-                        UserInterface selectedUser = UserManager.getInstance()
-                                                        .findItemByID(selectedID);
-                        
-                    } catch (IllegalArgumentException ex){}
+                    User selectedUser = getSelectedUser();
+                    if (selectedUser == null) return;
+
+                    new UserView(selectedUser);
                 }
             }
         );
@@ -199,7 +176,7 @@ public class AdminConsole {
 
                     try{
                         selectedGroup.addUser(UserFactory.createUser(typedID));
-                        updateLabels();
+                        analysisLabels.updateLabels(root);
                     } catch (IllegalArgumentException ex) { return; }
                     
                     setTreeViewText();
@@ -224,7 +201,7 @@ public class AdminConsole {
                         UserGroup createdUser = UserFactory.createUserGroup(typedID);
                         selectedGroup.addUser(createdUser);
                         lastSelected = createdUser;
-                        updateLabels();
+                        analysisLabels.updateLabels(root);
                     } catch (IllegalArgumentException ex) { return; }
                     
                     setTreeViewText();
@@ -234,7 +211,7 @@ public class AdminConsole {
         userManagementPanel.add(addUserGroupButton);
 
 
-        userManagementPanel.setPreferredSize(PANEL_DIMENSION);
+        userManagementPanel.setPreferredSize(UIConstants.SMALL_PANEL_DIMENSION);
         return userManagementPanel;
     }
 
@@ -255,6 +232,14 @@ public class AdminConsole {
             lastSelected = UserGroupManager.getInstance()
                                     .findItemByID(selectedID);
             return lastSelected;
+        } catch (IllegalArgumentException ex){ return null; }
+    }
+
+    public User getSelectedUser(){
+        String selectedID = getSelectedID();
+        try{
+            return UserManager.getInstance()
+                                    .findItemByID(selectedID);
         } catch (IllegalArgumentException ex){ return null; }
     }
 
@@ -287,38 +272,19 @@ public class AdminConsole {
 
     private JPanel getAnalysisPanel(){
         JPanel analysisPanel = new JPanel();
-        analysisPanel.setBorder(createTitledBorder("Analysis", Color.BLACK));
-        analysisPanel.setBackground(BACKGROUND_COLOR);
-        analysisPanel.setPreferredSize(PANEL_DIMENSION);
+        analysisPanel.setBorder(UIConstants.createTitledBorder("Analysis", Color.BLACK));
+        analysisPanel.setBackground(UIConstants.BACKGROUND_COLOR);
+        analysisPanel.setPreferredSize(UIConstants.SMALL_PANEL_DIMENSION);
 
         analysisPanel.setLayout(new GridLayout(2, 2, 5, 5));
 
-        updateLabels();
+        analysisLabels.updateLabels(root);
 
-        analysisPanel.add(userCountLabel);
-        analysisPanel.add(groupCountLabel);
-        analysisPanel.add(messageCountLabel);
-        analysisPanel.add(sentimentValueLabel);
+        for (JLabel label : analysisLabels.getLabels()){
+            analysisPanel.add(label);
+        }
 
         return analysisPanel;
-    }
-
-    private void updateLabels(){
-        Analyzer analyzer = new Analyzer();
-        
-        root.accept(analyzer);
-        userCountLabel.setText("User Count: " + analyzer.getUserCount());
-        groupCountLabel.setText("Group Count: " + analyzer.getUserGroupCount());
-        messageCountLabel.setText("Msg Count: " + analyzer.getNewsFeedCount());
-        sentimentValueLabel.setText("Sentiment: " + analyzer.getSentiment());
-    }
-
-    private static TitledBorder createTitledBorder(String title, Color color){
-        return BorderFactory.createTitledBorder(
-                                    BorderFactory.createLineBorder(color, 2), 
-                                    title, 0, 0,
-                                    new Font("Verdana", 0, 13)
-                                );
     }
 
 }

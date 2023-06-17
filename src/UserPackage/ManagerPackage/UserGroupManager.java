@@ -9,7 +9,7 @@ public class UserGroupManager extends AbstractManager<UserGroup> {
     /**
      * The single instance of this Singleton UserGroupManager
      */
-    public static AbstractManager<UserGroup> instance = null;
+    private static AbstractManager<UserGroup> instance = null;
 
     /**
      * Retrieves the single instance created of the UserGroupManager

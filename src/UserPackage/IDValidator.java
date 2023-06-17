@@ -8,7 +8,7 @@ public class IDValidator {
     /**
      * The single instance of this Singleton IDValidator
      */
-    public static IDValidator instance = null;
+    private static IDValidator instance = null;
 
     /**
      * A static Set of the IDs already in the system

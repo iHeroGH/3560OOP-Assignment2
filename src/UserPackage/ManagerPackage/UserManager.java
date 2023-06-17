@@ -9,7 +9,7 @@ public class UserManager extends AbstractManager<User> {
     /**
      * The single instance of this Singleton UserManager
      */
-    public static AbstractManager<User> instance = null;
+    private static AbstractManager<User> instance = null;
 
     /**
      * Retrieves the single instance created of the UserManager

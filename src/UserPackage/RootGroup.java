@@ -5,7 +5,7 @@ public class RootGroup extends UserGroup {
     /**
      * The single instance of this Singleton RootGroup
      */
-    public static RootGroup instance = null;
+    private static RootGroup instance = null;
     
     /**
      * Retrieves the single instance created of the RootGroup
