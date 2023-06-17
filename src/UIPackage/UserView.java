@@ -2,7 +2,6 @@ package src.UIPackage;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -20,9 +19,6 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
 import src.UserPackage.User;
-import src.UserPackage.UserFactory;
-import src.UserPackage.UserGroup;
-import src.UserPackage.ManagerPackage.UserManager;
 import src.UserPackage.ObserverPackage.FollowerInterface;
 
 public class UserView extends JFrame{
@@ -41,6 +37,13 @@ public class UserView extends JFrame{
         postsText = new JTextPane();
         followersText = new JTextPane();
         followingText = new JTextPane();
+
+        followersText.setContentType("text/html");
+        followersText.setEditable(false);
+        followingText.setContentType("text/html");
+        followingText.setEditable(false);
+        postsText.setContentType("text/html");
+        postsText.setEditable(false);
 
         JPanel userViewContainer = getAdminContainer();
         userViewContainer.add(getFollowButtons());
@@ -107,12 +110,6 @@ public class UserView extends JFrame{
     private JPanel getFollowView(){
         JPanel followManagerPanel = new JPanel(new GridLayout(1, 2, 5, 5));
         
-        followersText.setContentType("text/html");
-        followersText.setEditable(false);
-
-        followingText.setContentType("text/html");
-        followingText.setEditable(false);
-        
         updateFollowers();
         updateFollowing();
         
@@ -178,11 +175,33 @@ public class UserView extends JFrame{
         postButtonsPanel.setBackground(UIConstants.BACKGROUND_COLOR);
         postButtonsPanel.setLayout(new GridLayout(1, 2, 5, 5));
 
-        JTextField message = new JTextField();
-        message.setFont(new Font(UIConstants.DEFAULT_FONT_NAME, 0, 15));
+        JTextField messageText = new JTextField();
+        messageText.setFont(new Font(UIConstants.DEFAULT_FONT_NAME, 0, 15));
         JButton postMessageButton = new JButton("Post");
 
-        postButtonsPanel.add(message);
+        postMessageButton.addActionListener(
+            new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    String typedText = getTypedText(messageText);
+                    if  (typedText.length() == 0) return;
+                    
+                    try{
+                        user.post(typedText);
+                        updatePosts();
+                        
+                        for(UserView userView : UserViewManager.getInstance().getUserItemSet()){
+                            if(user.getFollowers().contains(userView.getUser())){
+                                userView.updatePosts();
+                            }
+                        }
+
+                    } catch (IllegalArgumentException ex) { return; }
+                    
+                }
+            }
+        );
+
+        postButtonsPanel.add(messageText);
         postButtonsPanel.add(postMessageButton);
 
         postButtonsPanel.setPreferredSize(UIConstants.SMALL_PANEL_DIMENSION);
@@ -191,7 +210,7 @@ public class UserView extends JFrame{
     }
 
     private JPanel getPostView(){
-        JPanel postViewPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel postViewPanel = new JPanel(new GridLayout(1, 1, 5, 5));
         postViewPanel.setBackground(UIConstants.BACKGROUND_COLOR);
         postViewPanel.setBorder(UIConstants.createTitledBorder(
                                     "News Feed", Color.BLUE
@@ -199,9 +218,6 @@ public class UserView extends JFrame{
                                 );
         postViewPanel.setPreferredSize(UIConstants.BIG_PANEL_DIMENSION);
 
-        postsText = new JTextPane();
-        postsText.setContentType("text/html");
-        postsText.setEditable(false);
         updatePosts();
 
         JScrollPane postsViewPane = new JScrollPane(postsText);

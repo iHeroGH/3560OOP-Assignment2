@@ -46,8 +46,8 @@ public class Driver {
         
         // System.out.println(john.getNewsFeed());
         // System.out.println(steve.getNewsFeed());
-        john.post("I love you!");
-        steve.post("Great!");
+        // john.post("I love you!");
+        // steve.post("Great!");
         // System.out.println(john.getNewsFeed());
         // System.out.println(steve.getNewsFeed());
         
