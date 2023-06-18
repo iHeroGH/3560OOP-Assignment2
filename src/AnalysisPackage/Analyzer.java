@@ -17,17 +17,21 @@ public class Analyzer implements AnalyzerInterface{
     private int userCount;
     private int userGroupCount;
     private int newsFeedCount;
-    private int positiveWordsCount;
+    private int positiveMessagesCount;
 
     private static Set<String> positiveWords;
     private final String POSITIVE_WORDS_FILE_PATH = "src\\AnalysisPackage\\PostivieWords.txt";
 
     public Analyzer(){
+        resetCounts();
+        initializePositiveWords();
+    }
+
+    public void resetCounts(){
         userCount = 0;
         userGroupCount = 0;
         newsFeedCount = 0;
-        positiveWordsCount = 0;
-        initializePositiveWords();
+        positiveMessagesCount = 0;
     }
 
     private void initializePositiveWords(){
@@ -67,7 +71,8 @@ public class Analyzer implements AnalyzerInterface{
         for(String message : newsFeed){
             for(String word : message.split(" ")){
                 if(positiveWords.contains(word.toLowerCase())){
-                    positiveWordsCount++;
+                    positiveMessagesCount++;
+                    break;
                 }
             }
         }
@@ -91,7 +96,7 @@ public class Analyzer implements AnalyzerInterface{
             return 0;
         }
 
-        return ((float) this.positiveWordsCount / this.newsFeedCount) * 100;
+        return ((float) this.positiveMessagesCount / this.newsFeedCount) * 100;
     }
     
 }

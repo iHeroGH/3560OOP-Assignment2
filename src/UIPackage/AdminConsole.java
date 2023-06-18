@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Utilities;
 
+import src.AnalysisPackage.Analyzer;
 import src.UserPackage.RootGroup;
 import src.UserPackage.User;
 import src.UserPackage.UserFactory;
@@ -30,11 +31,10 @@ public class AdminConsole extends JFrame{
     private static AdminConsole instance = null;
     
     private RootGroup root;
+    private Analyzer analyzer;
 
     private JTextPane treeViewTextPane;
     private UserGroup lastSelected;
-
-    private AnalysisLabels analysisLabels;
 
     /**
      * Retrieves the single instance created of the AdminConsole
@@ -53,9 +53,9 @@ public class AdminConsole extends JFrame{
      */
     private AdminConsole(){
         super("Mini-Twitter Admin Console");
-        analysisLabels = new AnalysisLabels();
         
         root = RootGroup.getInstance();
+        analyzer = new Analyzer();
         lastSelected = root;
 
         JPanel adminContainer = getAdminContainer();
@@ -175,7 +175,6 @@ public class AdminConsole extends JFrame{
 
                     try{
                         selectedGroup.addUser(UserFactory.createUser(typedID));
-                        analysisLabels.updateLabels(root);
                     } catch (IllegalArgumentException ex) { return; }
                     
                     setTreeViewText();
@@ -200,7 +199,6 @@ public class AdminConsole extends JFrame{
                         UserGroup createdUser = UserFactory.createUserGroup(typedID);
                         selectedGroup.addUser(createdUser);
                         lastSelected = createdUser;
-                        analysisLabels.updateLabels(root);
                     } catch (IllegalArgumentException ex) { return; }
                     
                     setTreeViewText();
@@ -276,14 +274,60 @@ public class AdminConsole extends JFrame{
         analysisPanel.setPreferredSize(UIConstants.SMALL_PANEL_DIMENSION);
 
         analysisPanel.setLayout(new GridLayout(2, 2, 5, 5));
+        
+        JButton updateUserCount = new JButton("Calculate User Count");
+        JButton updateGroupCount = new JButton("Calculate Group Count");
+        JButton updateMessageCount = new JButton("Calculate Message Count");
+        JButton updateSentiment = new JButton("Calculate Sentiment Value");
 
-        analysisLabels.updateLabels(root);
+        updateUserCount.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent e){
+                    prepareAnalyzer();
+                    showMessageDialog("User Count: " + analyzer.getUserCount());
+                }
+            }
+        );
+        updateGroupCount.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent e){
+                    prepareAnalyzer();
+                    showMessageDialog("Group Count: " + analyzer.getUserGroupCount());
+                }
+            }
+        );
+        updateMessageCount.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent e){
+                    prepareAnalyzer();
+                    showMessageDialog("Message Count: " + analyzer.getNewsFeedCount());
+                }
+            }
+        );
+        updateSentiment.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent e){
+                    prepareAnalyzer();
+                    showMessageDialog("Sentiment Value: " + analyzer.getSentiment() + "%");
+                }
+            }
+        );
 
-        for (JLabel label : analysisLabels.getLabels()){
-            analysisPanel.add(label);
-        }
+        analysisPanel.add(updateUserCount);
+        analysisPanel.add(updateGroupCount);
+        analysisPanel.add(updateMessageCount);
+        analysisPanel.add(updateSentiment);
 
         return analysisPanel;
+    }
+
+    private void prepareAnalyzer(){
+        analyzer.resetCounts();
+        root.accept(analyzer);
+    }
+
+    private void showMessageDialog(String message){
+        JOptionPane.showMessageDialog(this, message);
     }
 
 }
