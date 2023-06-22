@@ -128,6 +128,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
 
     /**
      * Follows a given user
+     * 
      * @param targetID The ID of the user to follow
      * @throws IllegalArgumentException if a user tries to follow themselves 
      *                                  or the user wasn't found
@@ -145,7 +146,8 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
 
     /**
      * Adds a user to the list of followers
-     * @param user The user who followed this user
+     * 
+     * @param follower The user who followed this user
      */
     @Override
     public void addFollower(FollowerInterface follower){
