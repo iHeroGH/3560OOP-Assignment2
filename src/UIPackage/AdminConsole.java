@@ -62,6 +62,7 @@ public class AdminConsole extends TwitterFrame{
     
     /**
      * Retrieves the single instance created of the AdminConsole
+     * 
      * @return The instance of the AdminConsole
      */
     public static AdminConsole getInstance(){
@@ -116,6 +117,7 @@ public class AdminConsole extends TwitterFrame{
 
     /**
      * Retrieves the Pane holding the TreeView text
+     * 
      * @return The JScrollPane holding the text
      */
     private JScrollPane getTreeViewPane(){
@@ -347,6 +349,7 @@ public class AdminConsole extends TwitterFrame{
 
     /**
      * Retrieves the ID selected from the tree view text based on the caret position
+     * 
      * @return The selected ID
      */    
     private String getSelectedID(){
@@ -472,6 +475,7 @@ public class AdminConsole extends TwitterFrame{
 
     /**
      * Shows a popup message dialog of a given message
+     * 
      * @param message The message to display
      */
     private void showMessageDialog(String message){

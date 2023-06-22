@@ -67,6 +67,7 @@ public class UserGroup implements UserInterface {
     /**
      * Retrieves the Group's ID as a formatted String with initially 0 indentation
      * (would be used for a Root group).
+     * 
      * @return The value of getFormattedID("")
      */
     public String getFormattedID(){
@@ -111,6 +112,7 @@ public class UserGroup implements UserInterface {
     /**
      * A simple setter to replace the Group ID (remove the old one, validate and set
      * the new one)
+     * 
      * @param groupID The new Group ID to use
      */
     @Override
@@ -125,6 +127,7 @@ public class UserGroup implements UserInterface {
 
     /**
      * Adds a UserInterface to the list of UserInterfaces held by this Group
+     * 
      * @param user The UserInterface to add
      * @throws IllegalArgumentException if the UserInterface is related to this Group
      */
@@ -143,7 +146,7 @@ public class UserGroup implements UserInterface {
      * other UserInterface
      * 
      * @param other The other UserInterface to check
-     * @boolean Whether or not the UserInterfaces are related
+     * @return Whether or not the UserInterfaces are related
      */
     @Override
     public boolean isRelated(UserInterface other){

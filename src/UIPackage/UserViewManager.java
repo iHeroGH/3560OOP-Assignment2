@@ -19,6 +19,7 @@ public class UserViewManager extends AbstractManager<UserView> {
 
     /**
      * Retrieves the single instance created of the UserManager
+     * 
      * @return The instance of the UserManager
      */
     public static AbstractManager<UserView> getInstance(){
@@ -39,7 +40,7 @@ public class UserViewManager extends AbstractManager<UserView> {
     /**
      * Checks whether this UserView's user's ID is equal to the String
      * 
-     * @param userGroup The UserView to check
+     * @param userView The UserView to check
      * @param other The ID to check
      * @return Whether the IDs are equal
      */

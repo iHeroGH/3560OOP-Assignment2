@@ -16,18 +16,21 @@ public interface PosterInterface {
     
     /**
      * Adds a follower to the list of followers for this Poster
+     * 
      * @param follower The FollowerInterface to add
      */
     public void addFollower(FollowerInterface follower);
 
     /**
      * Retrieves the Set of Followers who follow this Poster
+     * 
      * @return The Set of Followers following this Poster
      */
     public Set<FollowerInterface> getFollowers();
 
     /**
      * Posts a message from this Poster
+     * 
      * @param message The message to post
      */
     public void post(String message);

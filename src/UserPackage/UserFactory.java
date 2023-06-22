@@ -13,6 +13,7 @@ public class UserFactory {
     
     /**
      * Creates a User with a random ID
+     * 
      * @return The User object created
      */
     public static User createUser(){
@@ -21,6 +22,8 @@ public class UserFactory {
 
     /**
      * Creates a User with a set ID
+     * 
+     * @param userID The ID to use for the constructor
      * @return The User object created
      */
     public static User createUser(String userID){
@@ -29,6 +32,7 @@ public class UserFactory {
 
     /**
      * Creates a UserGroup with a random ID
+     * 
      * @return The UserGroup object created
      */
     public static UserGroup createUserGroup(){
@@ -37,6 +41,8 @@ public class UserFactory {
 
     /**
      * Creates a UserGroup with a set ID
+     * 
+     * @param groupID The ID to use for the constructor
      * @return The UserGroup object created
      */
     public static UserGroup createUserGroup(String groupID){

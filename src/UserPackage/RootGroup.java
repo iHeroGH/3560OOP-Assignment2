@@ -18,6 +18,7 @@ public class RootGroup extends UserGroup {
     
     /**
      * Retrieves the single instance created of the RootGroup
+     * 
      * @return The instance of the RootGroup
      */
     public static RootGroup getInstance(){
@@ -40,7 +41,7 @@ public class RootGroup extends UserGroup {
      * 
      * Since this is the Root Group, we don't add the "-" character
      * 
-     * @param indenation The indentation to use at the start of the ID
+     * @param indentation The indentation to use at the start of the ID
      * @return The fully formatted ID (contains the rest of the tree view)
      */
     @Override

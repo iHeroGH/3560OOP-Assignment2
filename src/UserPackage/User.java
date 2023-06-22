@@ -96,6 +96,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
 
     /**
      * A simple getter method for the User's unique ID
+     * 
      * @return The User's unique ID
      */
     @Override
@@ -153,6 +154,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
 
     /**
      * Retrieves this users followers list
+     * 
      * @return The set of users who follow this user
      */
     @Override
@@ -162,6 +164,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
     
     /** 
      * Retrieves this user's followed users
+     * 
      * @return The set of users this user follows
      */
     @Override
@@ -204,6 +207,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
 
     /**
      * A simple getter method to retrieve the news feed
+     * 
      * @return The List of formatted messages (formatted with the poster's ID)
      */
     public List<String> getNewsFeed(){

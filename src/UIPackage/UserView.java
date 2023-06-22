@@ -54,6 +54,7 @@ public class UserView extends TwitterFrame{
 
     /**
      * Taking a user, we create a UserView
+     * 
      * @param user The User to view
      */
     public UserView(User user){
@@ -92,6 +93,8 @@ public class UserView extends TwitterFrame{
 
     /** 
      * Retrieves the User being viewed by this UserView
+     * 
+     * @return The User being viewed
     */
     public User getUser(){
         return user;

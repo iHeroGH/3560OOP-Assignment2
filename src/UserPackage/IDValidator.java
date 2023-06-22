@@ -38,6 +38,7 @@ public class IDValidator {
 
     /**
      * Retrieves the single instance created of the IDValidator
+     * 
      * @return The instance of the IDValidator
      */
     public static IDValidator getInstance(){
@@ -55,6 +56,7 @@ public class IDValidator {
 
     /**
      * A method to check if a provided ID is already in use
+     * 
      * @param idToCheck The ID to check use for
      * @return A boolean denoting whether or not the ID is in use
      */
@@ -64,6 +66,7 @@ public class IDValidator {
 
     /**
      * A method to check if a provided ID is valid
+     * 
      * @param idToCheck The ID to check use for
      * @return A boolean denoting whether or not the ID is valid
      */
@@ -75,7 +78,8 @@ public class IDValidator {
 
     /**
      * A method to add a provided ID to the set of usedIDs
-     * @param idToCheck The ID to add
+     * 
+     * @param idToAdd The ID to add
      * @throws IllegalArgumentException if the ID is already in use
      */
     public void useID(String idToAdd){
@@ -98,6 +102,8 @@ public class IDValidator {
 
     /**
      * A method to remove a provided ID from the set of usedIDs
+     * 
+     * @param idToRemove The ID to remove from the set
      */
     public void dropID(String idToRemove){
         this.usedIDs.remove(idToRemove);

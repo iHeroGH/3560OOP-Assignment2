@@ -7,9 +7,17 @@ import java.util.Set;
  * 
  * The AbstractManager keeps track of a Global Item Set. Items can be added to the set,
  * and Items can be found from the 
+ * 
+ * @param <T> The Type of Object that this Manager manages
+ * 
+ * @author George Matta
+ * @version 1.0
  */
 public abstract class AbstractManager<T> {
 
+    /**
+     * The Global Item Set managed by this Manager
+     */
     protected Set<T> globalItemSet;
 
     /**
@@ -22,6 +30,8 @@ public abstract class AbstractManager<T> {
     
     /**
      * Retrieves the global item set
+     * 
+     * @return The Global Item Set
      */
     public Set<T> getUserItemSet(){
         return this.globalItemSet;

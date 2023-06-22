@@ -9,6 +9,9 @@ import src.UserPackage.UserGroup;
  * 
  * Since this is a Singleton and extends the AbstractManager class, we define
  * methods for getting the instance and comparing items
+ * 
+ * @author George Matta
+ * @version 1.0
  */
 public class UserGroupManager extends AbstractManager<UserGroup> {
     
@@ -19,6 +22,7 @@ public class UserGroupManager extends AbstractManager<UserGroup> {
 
     /**
      * Retrieves the single instance created of the UserGroupManager
+     * 
      * @return The instance of the UserGroupManager
      */
     public static AbstractManager<UserGroup> getInstance(){

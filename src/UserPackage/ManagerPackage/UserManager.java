@@ -9,6 +9,9 @@ import src.UserPackage.User;
  * 
  * Since this is a Singleton and extends the AbstractManager class, we define
  * methods for getting the instance and comparing items
+ * 
+ * @author George Matta
+ * @version 1.0
  */
 public class UserManager extends AbstractManager<User> {
     
@@ -19,6 +22,7 @@ public class UserManager extends AbstractManager<User> {
 
     /**
      * Retrieves the single instance created of the UserManager
+     * 
      * @return The instance of the UserManager
      */
     public static AbstractManager<User> getInstance(){
@@ -39,7 +43,7 @@ public class UserManager extends AbstractManager<User> {
     /**
      * Checks whether this User's ID is equal to the String
      * 
-     * @param userGroup The User to check
+     * @param user The User to check
      * @param other The ID to check
      * @return Whether the IDs are equal
      */

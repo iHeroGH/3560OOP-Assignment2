@@ -57,7 +57,8 @@ public class TwitterFrame extends JFrame {
 
     /**
      * This constructor takes a title and creates a JFrame out of it
-     * @param title
+     * 
+     * @param title The title to give the JFrame
      */
     public TwitterFrame(String title){
         super(title);
@@ -65,6 +66,7 @@ public class TwitterFrame extends JFrame {
 
     /**
      * Creates a titled border with the default font
+     * 
      * @param title The title to use in the border
      * @param color The color of the border
      * @return The created border
@@ -79,6 +81,7 @@ public class TwitterFrame extends JFrame {
 
     /**
      * Retrieves the text typed in a text field and empties the text field
+     * 
      * @param idTextField The text field to retrieve text for
      * @return The text typed in the field
      */

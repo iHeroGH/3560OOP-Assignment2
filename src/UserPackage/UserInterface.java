@@ -24,6 +24,7 @@ public interface UserInterface {
     
     /**
      * A simple getter method for the User's ID
+     * 
      * @return A String of the ID
      */
     public String getID();
@@ -31,6 +32,7 @@ public interface UserInterface {
     /**
      * Retrieve's the user's ID and adds a given amount of indentation before it
      * (can be used to denote a User's belonging to a Group)
+     * 
      * @param indentation The indentation to add before the ID
      * @return The fully formatted String
      */
@@ -39,6 +41,7 @@ public interface UserInterface {
     /**
      * A simple setter method to set the User's ID. 
      * ID Validation should be done here
+     * 
      * @param userID The ID to set for the user
      */
     public void setID(String userID);
@@ -58,6 +61,7 @@ public interface UserInterface {
 
     /**
      * The acceptnace method for Analysis purposes with a Visitor
+     * 
      * @param visitor The AnalysisInterface visitor object
      */
     public void accept(AnalyzerInterface visitor);
