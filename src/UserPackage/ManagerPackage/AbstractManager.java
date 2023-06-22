@@ -2,6 +2,12 @@ package src.UserPackage.ManagerPackage;
 
 import java.util.Set;
 
+/**
+ * The AbstractManager defines an AbstractClass that can Manage any generic type.
+ * 
+ * The AbstractManager keeps track of a Global Item Set. Items can be added to the set,
+ * and Items can be found from the 
+ */
 public abstract class AbstractManager<T> {
 
     protected Set<T> globalItemSet;
@@ -22,12 +28,13 @@ public abstract class AbstractManager<T> {
     }
     
     /**
-     * Finds a item by their ID
+     * Finds a item based on the compareItems criteria
+     * 
      * @param targetID The ID of the item to find
      * @return The item found by the ID
      * @throws IllegalArgumentException if the item was not found
      */
-    public T findItemByID(String targetID){
+    public T findItem(String targetID){
         for(T item : globalItemSet){
             if (compareItems(item, targetID)){
                 return item;
@@ -39,5 +46,13 @@ public abstract class AbstractManager<T> {
         );
     }
 
+    /**
+     * An abstract comparison method that should be overriden depending on what
+     * type of object this manager should manage
+     * 
+     * @param item The Item to compare with the other
+     * @param other The String to compare this Item with
+     * @return Whether the items are equal
+     */
     public abstract boolean compareItems(T item, String other);
 }

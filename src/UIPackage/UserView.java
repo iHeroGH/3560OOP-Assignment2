@@ -19,7 +19,9 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
 import src.UserPackage.User;
+import src.UserPackage.UserInterface;
 import src.UserPackage.ObserverPackage.FollowerInterface;
+import src.UserPackage.ObserverPackage.PosterInterface;
 
 public class UserView extends JFrame{
     
@@ -157,15 +159,15 @@ public class UserView extends JFrame{
     private String getFollowers(){
         String followers = "<b>Followers</b><br>";
         for(FollowerInterface follower : user.getFollowers()){
-            followers += follower.getID() + "<br>";
+            followers += ((UserInterface) follower).getID() + "<br>";
         }
         return followers;
     }
 
     private String getFollowing(){
         String followers = "<b>Following</b><br>";
-        for(FollowerInterface follower : user.getFollowing()){
-            followers += follower.getID() + "<br>";
+        for(PosterInterface follower : user.getFollowing()){
+            followers += ((UserInterface) follower).getID() + "<br>";
         }
         return followers;
     }

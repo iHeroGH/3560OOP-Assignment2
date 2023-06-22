@@ -3,6 +3,18 @@ package src.UserPackage;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The IDValidator Singleton class provides a hub of validation for User IDs
+ * 
+ * In short, User IDs are unique (throughout both Groups and Users), and 
+ * other validations could be done here as well (length, illegal characters, etc)
+ * 
+ * Since this is a Singleton, we only define one instance that is shared amongst
+ * any classes that need IDs in the program
+ * 
+ * @author George Matta
+ * @version 1.0
+ */
 public class IDValidator {
 
     /**
@@ -19,7 +31,7 @@ public class IDValidator {
     private Set<String> usedIDs = new HashSet<String>();
 
     /**
-     * A final static field of the length of an ID.
+     * A final static field of the length of a random ID.
      * This implementation uses {@value #ID_LENGTH}
      */
     private static final int ID_LENGTH = 7;
@@ -51,12 +63,14 @@ public class IDValidator {
     }
 
     /**
-     * A method to check if a provided ID is valid (doesn't contain *)
+     * A method to check if a provided ID is valid
      * @param idToCheck The ID to check use for
      * @return A boolean denoting whether or not the ID is valid
      */
     public boolean checkValid(String idToCheck){
-        return !idToCheck.contains("*");
+        return (!idToCheck.contains("*") ||
+                 !idToCheck.contains(" ") ||
+                 idToCheck != null);
     }
 
     /**
@@ -67,15 +81,18 @@ public class IDValidator {
     public void useID(String idToAdd){
         boolean exists = checkExists(idToAdd);
         boolean valid = checkValid(idToAdd);
+        
+        // If the ID is valid
+        if (!valid){
+            throw new IllegalArgumentException("IDs cannot contain the * or space characters.");
+        }
 
+        // If the ID already exists
         if(exists){
             throw new IllegalArgumentException("The provided ID is already in use.");
         }
 
-        if (!valid){
-            throw new IllegalArgumentException("IDs cannot contain the * character.");
-        }
-
+        // Add it to the set
         this.usedIDs.add(idToAdd);
     }
 
@@ -98,7 +115,7 @@ public class IDValidator {
         
         // Keep generating IDs until one is found
         String generatedID = generateRandomID();
-        while (this.checkExists(generatedID)){
+        while (checkExists(generatedID) || !checkValid(generatedID)){
             generatedID = generateRandomID();
         }
         

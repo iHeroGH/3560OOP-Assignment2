@@ -227,7 +227,7 @@ public class AdminConsole extends JFrame{
         String selectedID = getSelectedID();
         try{
             lastSelected = UserGroupManager.getInstance()
-                                    .findItemByID(selectedID);
+                                    .findItem(selectedID);
             return lastSelected;
         } catch (IllegalArgumentException ex){ return null; }
     }
@@ -236,7 +236,7 @@ public class AdminConsole extends JFrame{
         String selectedID = getSelectedID();
         try{
             return UserManager.getInstance()
-                                    .findItemByID(selectedID);
+                                    .findItem(selectedID);
         } catch (IllegalArgumentException ex){ return null; }
     }
 

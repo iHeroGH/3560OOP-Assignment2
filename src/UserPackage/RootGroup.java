@@ -1,5 +1,14 @@
 package src.UserPackage;
 
+/**
+ * The RootGroup class (extends UserGroup) is a Singleton that maintains
+ * existence of only one Root Group.
+ * 
+ * The Root Group contains all other UserGroups.
+ * 
+ * @author George Matta
+ * @version 1.0
+ */
 public class RootGroup extends UserGroup {
 
     /**
@@ -19,22 +28,24 @@ public class RootGroup extends UserGroup {
         return instance;
     }
 
+    /**
+     * Initializes the Root Group with the "Root" ID
+     */
     private RootGroup(){
         super("Root");
     }
 
-    public void addUser(UserInterface userToAdd){
-        if(!this.isRelated(userToAdd)){
-            this.users.add(userToAdd);
-        } else {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
+    /**
+     * Retrieves the Root Group's formatted ID with an indentation at the start.
+     * 
+     * Since this is the Root Group, we don't add the "-" character
+     * 
+     * @param indenation The indentation to use at the start of the ID
+     * @return The fully formatted ID (contains the rest of the tree view)
+     */
     @Override
     public String getFormattedID(String indentation){
-        String formattedID = indentation + "**" + this.groupID + "***";
+        String formattedID = indentation + "**" + this.getID() + "***";
         formattedID += super.getTreeString(indentation);
 
         return formattedID;

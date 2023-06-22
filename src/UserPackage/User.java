@@ -12,9 +12,11 @@ import src.UserPackage.ObserverPackage.PosterInterface;
 import java.util.HashSet;
 
 /**
- * The User class implements various methods for unique ID storage, manipulation,
- * and validation. 
+ * The User class implements interfaces for the UserInterface composite component, 
+ * a PosterInterface to serve as an Subject, and a FollowerInterface to serve as an
+ * Observer. 
  * 
+ * All these Interfaces require their own list of methods that are identified below.
  * 
  * @author George Matta
  * @version 1.0
@@ -27,14 +29,14 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
     private String userID;
     
     /**
-     * The list of users following this Poster
+     * The list of Followers following this Poster
      */
     private Set<FollowerInterface> followers;
 
     /**
-     * The list of users this Poster follows
+     * The list of Posters this follower follows
      */
-    private Set<FollowerInterface> following;
+    private Set<PosterInterface> following;
 
     /**
      * The news feed available to this user
@@ -43,8 +45,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
 
     /**
      * The default constructor for a User
-     * 
-     * Delegates to the User(String) constructor using a random, valid, ID
+     * Finds a random but valid ID and initializes it
      */
     public User(){
         this.userID = IDValidator.getInstance().findValidID();
@@ -62,35 +63,16 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
         initializeUser();
     }
 
+    /**
+     * Preforms the rest of the initalization for the User (setting up the
+     * followers, following, and newsFeed attributes, 
+     * and adding this user to the Manager).
+     */
     private void initializeUser(){
         UserManager.getInstance().addItem(this);
         followers = new HashSet<FollowerInterface>();
-        following = new HashSet<FollowerInterface>();
+        following = new HashSet<PosterInterface>();
         newsFeed = new ArrayList<String>();   
-    }
-
-    /**
-     * A simple getter method for the User's unique ID
-     * @return The User's unique ID
-     */
-    @Override
-    public String getID(){
-        return this.userID;
-    }
-
-    /**
-     * A String representation of the User object
-     * 
-     * @return The User formatted as User(ID)
-     */
-    @Override
-    public String toString(){
-        return "User(" + getID() + ")";
-    }
-
-    @Override
-    public String getFormattedID(String indentation){
-        return indentation + "- " + this.userID;
     }
 
     /**
@@ -105,11 +87,31 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
         // If the ID is already in use
         IDValidator.getInstance().useID(generatedID);
 
-        // Stop using old ID
+        // Stop using old ID if there is one
         IDValidator.getInstance().dropID(userID);
 
         // Otherwise use it
         this.userID = generatedID;
+    }
+
+    /**
+     * A simple getter method for the User's unique ID
+     * @return The User's unique ID
+     */
+    @Override
+    public String getID(){
+        return this.userID;
+    }
+
+    /**
+     * Gets the User's ID with indentation at the front and a dash symbol.
+     * 
+     * ie: \t- ID
+     * 
+     */
+    @Override
+    public String getFormattedID(String indentation){
+        return indentation + "- " + this.userID;
     }
 
     /**
@@ -129,12 +131,13 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
      * @throws IllegalArgumentException if a user tries to follow themselves 
      *                                  or the user wasn't found
      */
+    @Override
     public void followUser(String targetID){
         if (targetID.equals(this.userID)){
             throw new IllegalArgumentException("A User cannot follow themselves.");
         }
 
-        User user = UserManager.getInstance().findItemByID(targetID);
+        User user = UserManager.getInstance().findItem(targetID);
         this.following.add(user);
         user.addFollower(this);
     }   
@@ -162,31 +165,71 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
      * @return The set of users this user follows
      */
     @Override
-    public Set<FollowerInterface> getFollowing(){
+    public Set<PosterInterface> getFollowing(){
         return this.following;
     }
 
+    /**
+     * Posts a message from this User.
+     * 
+     * We add the given message to the User's news feed as UserID (you): message.
+     * 
+     * We also update all the followers with the message
+     * 
+     * @param message The message String to post
+     */
     @Override
     public void post(String message){
-        this.newsFeed.add(this.userID + " (You): " + message);
+        // Add the message to ourselves
+        this.newsFeed.add(this.userID + " (you): " + message);
 
+        // Update our followers
         for(FollowerInterface follower : followers){
             follower.update(this.userID, message);
         }
     }
 
+    /**
+     * Recieves an update from a User that we follow.
+     * 
+     * We simply add the message to the news feed as posterID: message.
+     * 
+     * @param posterID The ID of the user who posted the message
+     * @param message The message they typed
+     */
     @Override
     public void update(String posterID, String message){
         this.newsFeed.add(posterID + ": " + message);
     }
 
+    /**
+     * A simple getter method to retrieve the news feed
+     * @return The List of formatted messages (formatted with the poster's ID)
+     */
     public List<String> getNewsFeed(){
         return this.newsFeed;
     }
 
+    /**
+     * Accepts an AnalyzerInterface Visitor for analytics like user count and message
+     * analysis
+     * 
+     * @param visitor The AnalyzerInterface visitor to accept
+     */
     @Override
     public void accept(AnalyzerInterface visitor){
         visitor.visitUser(this);
         visitor.visitNewsFeed(this.newsFeed);
     }
+
+     /**
+     * A String representation of the User object
+     * 
+     * @return The User formatted as User(ID)
+     */
+    @Override
+    public String toString(){
+        return "User(" + getID() + ")";
+    }
+
 }
