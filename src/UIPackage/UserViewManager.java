@@ -4,6 +4,12 @@ import java.util.HashSet;
 
 import src.UserPackage.ManagerPackage.AbstractManager;
 
+/**
+ * The UserViewManager keeps track of all the UserViews created
+ * 
+ * Since this is a Singleton and extends the AbstractManager class, we define
+ * methods for getting the instance and comparing items
+ */
 public class UserViewManager extends AbstractManager<UserView> {
     
     /**
@@ -30,6 +36,13 @@ public class UserViewManager extends AbstractManager<UserView> {
         this.globalItemSet = new HashSet<UserView>();
     }
 
+    /**
+     * Checks whether this UserView's user's ID is equal to the String
+     * 
+     * @param userGroup The UserView to check
+     * @param other The ID to check
+     * @return Whether the IDs are equal
+     */
     @Override
     public boolean compareItems(UserView userView, String other){
         return userView.getUser().getID().equals(other);

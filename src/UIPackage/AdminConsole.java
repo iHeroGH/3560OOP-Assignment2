@@ -23,19 +23,43 @@ import src.UserPackage.UserGroup;
 import src.UserPackage.ManagerPackage.UserGroupManager;
 import src.UserPackage.ManagerPackage.UserManager;
 
-public class AdminConsole extends JFrame{
+/**
+ * The AdminConsole sets up the main screen Users will be greeted to
+ * 
+ * We are able to add Users and Groups to the Tree View, execute Analysis methods,
+ * and enter the User View for selected Users.
+ * 
+ * @author George Matta
+ * @version 1.0
+ */
+public class AdminConsole extends TwitterFrame{
     
     /**
      * The single instance of this Singleton IDValidator
      */
     private static AdminConsole instance = null;
     
+    /**
+     * The RootGroup that holds all other UserInterfaces
+     */
     private RootGroup root;
+
+    /**
+     * The Analyzer we use to calculate statistics
+     */
     private Analyzer analyzer;
 
+    /**
+     * The text pane displaying the Tree View
+     */
     private JTextPane treeViewTextPane;
-    private UserGroup lastSelected;
 
+    /**
+     * The UserGroup last selected (so we don't have to keep selecting a group to
+     * add users to it)
+     */
+    private UserGroup lastSelected;
+    
     /**
      * Retrieves the single instance created of the AdminConsole
      * @return The instance of the AdminConsole
@@ -54,36 +78,59 @@ public class AdminConsole extends JFrame{
     private AdminConsole(){
         super("Mini-Twitter Admin Console");
         
+        // Get the Root Group instance
         root = RootGroup.getInstance();
-        analyzer = new Analyzer();
         lastSelected = root;
 
+        // Set up the analyzer
+        analyzer = new Analyzer();
+
+        // Set up the main container to hold all the panels
         JPanel adminContainer = getAdminContainer();
         adminContainer.add(getTreeViewPane());
         adminContainer.add(getUserManagementPanel());
         adminContainer.add(getAnalysisPanel());
         
+        // Add the container to the frame and display to the screen
         this.add(adminContainer);
-        this.setSize(UIConstants.SCREEN_WIDTH, UIConstants.SCREEN_HEIGHT);
+        this.setSize(this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
         this.setVisible(true);
     }
 
+    /**
+     * Retrieves the Admin container that should hold all the panels.
+     * 
+     * We simply set the background color, set the layout (box), 
+     * and set the border (empty border)
+     * 
+     * @return The JPanel of the AdminContainer
+     */
     private JPanel getAdminContainer(){
         JPanel adminContainer = new JPanel();
-        adminContainer.setBackground(UIConstants.BACKGROUND_COLOR);
+        adminContainer.setBackground(this.BACKGROUND_COLOR);
         adminContainer.setLayout(new BoxLayout(adminContainer, BoxLayout.Y_AXIS));
         adminContainer.setBorder(new EmptyBorder(15, 15, 15, 15));
 
         return adminContainer;
     }
 
+    /**
+     * Retrieves the Pane holding the TreeView text
+     * @return The JScrollPane holding the text
+     */
     private JScrollPane getTreeViewPane(){
+        // Set up the text
         this.treeViewTextPane = new JTextPane();
+        
+        // We will format the text as html, and set the text
         treeViewTextPane.setContentType("text/html");
         treeViewTextPane.setEditable(false);
-        treeViewTextPane.setBackground(UIConstants.BACKGROUND_COLOR);
+        treeViewTextPane.setBackground(this.BACKGROUND_COLOR);
         setTreeViewText();
-
+        
+        // We want to be able to select users from the tree view
+        // We do this with a mouse listener - if the user clicks, we reset the lastSelected
+        // so it can be set later by caret position
         treeViewTextPane.addMouseListener(
             new MouseListener() {                
                 @Override
@@ -102,26 +149,45 @@ public class AdminConsole extends JFrame{
             }
         );
 
+        // Set a panel with a border layout to prevent Wrapping in the text pane
         JPanel noWrapPanel = new JPanel(new BorderLayout());
         noWrapPanel.add(treeViewTextPane);
 
+        // Add this noWrapPanel to a Scroll pane to allow us to scroll through the
+        // text if it gets too long
         JScrollPane treeViewPane = new JScrollPane(noWrapPanel);
-        treeViewPane.setBackground(UIConstants.BACKGROUND_COLOR);
+        treeViewPane.setBackground(this.BACKGROUND_COLOR);
         treeViewPane.setBorder(new CompoundBorder(
                                     BorderFactory.createEmptyBorder(
                                         0, 0, 5, 0
                                         ),
-                                    UIConstants.createTitledBorder("Tree View", Color.BLUE)
+                                    this.createTitledBorder("Tree View", Color.BLUE)
                                 )
                             );
-        treeViewPane.setPreferredSize(UIConstants.BIG_PANEL_DIMENSION);
-
+        treeViewPane.setPreferredSize(this.BIG_PANEL_DIMENSION);
+        
+        // Return the final treeViewPane
         return treeViewPane;
     }
 
+    /**
+     * Sets the treeViewText to the formatted String of the RootGroup's formatted ID.
+     * 
+     * We take this String and translate it to HTML:
+     * - We replace ** with a starting bold tag
+     * - We replace *** with an ending bold tag
+     * - We replace new lines with a line break
+     * - We replace indentation with an EM space
+     * 
+     * We also define the font to use
+     */
     private void setTreeViewText(){
+        if(this.treeViewTextPane == null){
+            return;
+        }
+
         this.treeViewTextPane.setText(
-            "<font size = +1 face = \"" + UIConstants.DEFAULT_FONT_NAME + "\">" + 
+            "<font size = +1 face = \"" + this.DEFAULT_FONT_NAME + "\">" + 
             root.getFormattedID().replaceAll("\\*\\*\\*", "</b>")
                                 .replaceAll("\\*\\*", "<b>")
                                 .replaceAll("\n", "<br>")
@@ -130,156 +196,222 @@ public class AdminConsole extends JFrame{
         );
     }
 
+    /**
+     * Retrieves the UserManagementPanel which has buttons to add Users or Groups
+     * and enter UserViews
+     * 
+     * @return The UserManagement JPanel
+     */
     private JPanel getUserManagementPanel(){
+        // The text field of the requested ID
         JTextField idTextField = new JTextField();
-        idTextField.setFont(new Font(UIConstants.DEFAULT_FONT_NAME, 0, 15));
+        idTextField.setFont(new Font(this.DEFAULT_FONT_NAME, 0, 15));
 
+        // The final panel to return
         JPanel userManagementPanel = new JPanel();
-        userManagementPanel.setBackground(UIConstants.BACKGROUND_COLOR);
+        userManagementPanel.setBackground(this.BACKGROUND_COLOR);
         userManagementPanel.setBorder(new CompoundBorder(
                                         BorderFactory.createEmptyBorder(
                                             0, 0, 5, 0
                                         ),
-                                        UIConstants.createTitledBorder("User Management", Color.RED)
+                                        this.createTitledBorder("User Management", Color.RED)
                                     )
                                 );
-        
         userManagementPanel.setLayout(new GridLayout(2, 3, 5, 5));        
 
+        // Add an empty space at grid spot 0,0
         userManagementPanel.add(new JLabel());
         
+        // The button for entering the UserView
         JButton userViewButton = new JButton("User View");
         userViewButton.addActionListener(
             new ActionListener(){
                 public void actionPerformed(ActionEvent e){
+                    // Retrieve the selected user and initialize a UserView based off
+                    // of it
                     User selectedUser = getSelectedUser();
                     if (selectedUser == null) return;
 
-                    new UserView(selectedUser);
-                }
+                    UserView uv = new UserView(selectedUser);
+                    uv.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+                    uv.setVisible(true);
+                }   
             }
         );
+        // Add the button to grid spot 0,1
         userManagementPanel.add(userViewButton);
-
+        
+        // Add an empty space at grid spot 0,2
         userManagementPanel.add(new JLabel());
-
+        
+        // The button for adding a User
         JButton addUserButton = new JButton("Add User");
         addUserButton.addActionListener(
             new ActionListener(){
                 public void actionPerformed(ActionEvent e){
+                    // Retrieve the selected UserGroup
                     UserGroup selectedGroup = getSelectedGroup();
                     if (selectedGroup == null) return;
                     
+                    // Retrieve the ID typed by the user
                     String typedID = getTypedText(idTextField);
                     if  (typedID.length() == 0) return;
 
                     try{
+                        // Try adding the created User to the selected group
                         selectedGroup.addUser(UserFactory.createUser(typedID));
                     } catch (IllegalArgumentException ex) { return; }
                     
+                    // Update the tree view's text to reflect changes
                     setTreeViewText();
                 }
             }
         );
+        // Add the user button to grid spot 1,0
         userManagementPanel.add(addUserButton);
-
+        
+        // Add the ID text field to grid spot 1,1
         userManagementPanel.add(idTextField);
 
+        // The button for adding a Group
         JButton addUserGroupButton = new JButton("Add User Group");
         addUserGroupButton.addActionListener(
             new ActionListener(){
                 public void actionPerformed(ActionEvent e){
+                    // Retrieve the selected UserGroup
                     UserGroup selectedGroup = getSelectedGroup();
                     if (selectedGroup == null) return;
                     
+                    // Retrieve the ID typed by the user
                     String typedID = getTypedText(idTextField);
                     if  (typedID.length() == 0) return;
                     
                     try{
+                        // Try adding the created user to the selected group
                         UserGroup createdUser = UserFactory.createUserGroup(typedID);
                         selectedGroup.addUser(createdUser);
                         lastSelected = createdUser;
                     } catch (IllegalArgumentException ex) { return; }
                     
+                    // Update the tree view's text to reflect changes
                     setTreeViewText();
                 }
             }
         );
+        // Add the user group button to grid spot 1,2
         userManagementPanel.add(addUserGroupButton);
 
-
-        userManagementPanel.setPreferredSize(UIConstants.SMALL_PANEL_DIMENSION);
+        // Return the final user management panel
+        userManagementPanel.setPreferredSize(this.SMALL_PANEL_DIMENSION);
         return userManagementPanel;
     }
 
-    public static String getTypedText(JTextField idTextField){
-        String typedID = idTextField.getText();
-        idTextField.setText("");
-
-        return typedID;
-    }
-
-    public UserGroup getSelectedGroup(){
+    /**
+     * Retrieves the selected group based on the selected ID
+     * 
+     * If lastSelected is populated, we just return that.
+     * 
+     * @return The selected UserGroup
+     */
+    private UserGroup getSelectedGroup(){
+        // The last selected group if one exists
         if (lastSelected != null){
             return lastSelected;
         }
 
+        // The ID to search for
         String selectedID = getSelectedID();
         try{
+            // Try finding a UserGroup with that ID and set it to be the latest selected
             lastSelected = UserGroupManager.getInstance()
                                     .findItem(selectedID);
             return lastSelected;
-        } catch (IllegalArgumentException ex){ return null; }
+        } catch (IllegalArgumentException ex){ return root; } 
+        // if something goes wrong, return the root user
     }
 
-    public User getSelectedUser(){
+    /**
+     * Retrieves the selected user based on the selected ID
+     * 
+     * @return The selected UserGroup
+     */
+    private User getSelectedUser(){
+        // The ID to search for
         String selectedID = getSelectedID();
         try{
+            // Try finding a User with that ID
             return UserManager.getInstance()
                                     .findItem(selectedID);
         } catch (IllegalArgumentException ex){ return null; }
     }
 
-    public String getSelectedID(){
+    /**
+     * Retrieves the ID selected from the tree view text based on the caret position
+     * @return The selected ID
+     */    
+    private String getSelectedID(){
+        // The selected Row based on the caret position
         int rowNum = getSelectedRow();
+
+        // The root user's formatted ID split into each individual item
         String[] lines = root.getFormattedID().split("\n\s+- ");
 
+        // Iterate through the lines and find the selected ID
         if (lines.length != 0 && rowNum >= 0 && rowNum < lines.length){
             return lines[rowNum].replaceAll("\\*", "");
         }
 
+        // If nothing is found, return the root group
         return root.getID();
     }
 
+    /**
+     * Retrieves the selected row in the tree view text based on the caret position
+     * 
+     * @return The selected row index
+     */
     public int getSelectedRow(){
+        // Initialize the row number and caret position
         int rowNum = 0;
         int caretPosition = treeViewTextPane.getCaretPosition();
+        
         try {
             for (int offset = caretPosition; offset > 0;) {
+                // Count rows until we reach the selected text
                 offset = Utilities.getRowStart(treeViewTextPane, offset) - 1;
                 rowNum++;
             }
         } catch (BadLocationException ex){
             ex.printStackTrace();
         }
+        // Indexing stats at 0
         rowNum--;
 
+        // Return the found index
         return rowNum;
     }
 
+    /**
+     * Retrieves the AnalysisPanel which has buttons to count statistics
+     * 
+     * @return The Analysis JPanel
+     */
     private JPanel getAnalysisPanel(){
+        
+        // Set up the panel
         JPanel analysisPanel = new JPanel();
-        analysisPanel.setBorder(UIConstants.createTitledBorder("Analysis", Color.BLACK));
-        analysisPanel.setBackground(UIConstants.BACKGROUND_COLOR);
-        analysisPanel.setPreferredSize(UIConstants.SMALL_PANEL_DIMENSION);
-
+        analysisPanel.setBorder(this.createTitledBorder("Analysis", Color.BLACK));
+        analysisPanel.setBackground(this.BACKGROUND_COLOR);
+        analysisPanel.setPreferredSize(this.SMALL_PANEL_DIMENSION);
         analysisPanel.setLayout(new GridLayout(2, 2, 5, 5));
         
+        // Set up buttons for each statistic
         JButton updateUserCount = new JButton("Calculate User Count");
         JButton updateGroupCount = new JButton("Calculate Group Count");
         JButton updateMessageCount = new JButton("Calculate Message Count");
         JButton updateSentiment = new JButton("Calculate Sentiment Value");
-
+        
+        // Display a message of the user count if the count users button is clicked
         updateUserCount.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent e){
@@ -288,6 +420,8 @@ public class AdminConsole extends JFrame{
                 }
             }
         );
+
+        // Display a message of the group count if the count groups button is clicked
         updateGroupCount.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent e){
@@ -296,6 +430,8 @@ public class AdminConsole extends JFrame{
                 }
             }
         );
+
+        // Display a message of the message count if the count messages button is clicked
         updateMessageCount.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent e){
@@ -304,6 +440,8 @@ public class AdminConsole extends JFrame{
                 }
             }
         );
+        
+        // Display a message of the sentiment value if the calculate sentiment button is clicked
         updateSentiment.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent e){
@@ -312,20 +450,30 @@ public class AdminConsole extends JFrame{
                 }
             }
         );
-
+        
+        // Add all the buttons to the analysis panel
         analysisPanel.add(updateUserCount);
         analysisPanel.add(updateGroupCount);
         analysisPanel.add(updateMessageCount);
         analysisPanel.add(updateSentiment);
 
+        // Return the panel
         return analysisPanel;
     }
 
+    /**
+     * Prepares the analyzer by resetting the counts and passing the analyzer to the
+     * root group
+     */
     private void prepareAnalyzer(){
         analyzer.resetCounts();
         root.accept(analyzer);
     }
 
+    /**
+     * Shows a popup message dialog of a given message
+     * @param message The message to display
+     */
     private void showMessageDialog(String message){
         JOptionPane.showMessageDialog(this, message);
     }
