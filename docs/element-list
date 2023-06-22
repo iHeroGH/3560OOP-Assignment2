@@ -1,0 +1,6 @@
+src
+src.AnalysisPackage
+src.UIPackage
+src.UserPackage
+src.UserPackage.ManagerPackage
+src.UserPackage.ObserverPackage
