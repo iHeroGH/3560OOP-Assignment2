@@ -34,6 +34,11 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
     private long creationTime;
 
     /**
+     * The latest time the NewsFeed was updated
+     */
+    private long lastUpdatedTime;
+
+    /**
      * The list of Followers following this Poster
      */
     private Set<FollowerInterface> followers;
@@ -79,6 +84,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
         following = new HashSet<PosterInterface>();
         newsFeed = new ArrayList<String>();
         creationTime = System.currentTimeMillis();
+        lastUpdatedTime = creationTime;
     }
 
     /**
@@ -88,6 +94,15 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
      */
     public long getCreationTime(){
         return this.creationTime;
+    }
+
+    /**
+     * A simple getter method to retrieve the User object's last updated time
+     *
+     * @return The updation time of the User
+     */
+    public long getUpdatedTime(){
+        return this.lastUpdatedTime;
     }
 
     /**
@@ -201,7 +216,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
     @Override
     public void post(String message){
         // Add the message to ourselves
-        this.newsFeed.add(this.userID + " (you): " + message);
+        this.update(this.userID + " (you)", message);
 
         // Update our followers
         for(FollowerInterface follower : followers){
@@ -219,6 +234,7 @@ public class User implements UserInterface, PosterInterface, FollowerInterface {
      */
     @Override
     public void update(String posterID, String message){
+        lastUpdatedTime = System.currentTimeMillis();
         this.newsFeed.add(posterID + ": " + message);
     }
 

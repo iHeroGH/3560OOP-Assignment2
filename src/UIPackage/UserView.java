@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -43,6 +44,11 @@ public class UserView extends TwitterFrame{
     private JTextPane postsText;
 
     /**
+     * The Panel holding the main posts view. Used to update the titled border
+     */
+    private JPanel postViewPanel;
+
+    /**
      * The text pane displaying the followers
      */
     private JTextPane followersText;
@@ -58,7 +64,7 @@ public class UserView extends TwitterFrame{
      * @param user The User to view
      */
     public UserView(User user){
-        super("User View: " + user.getID() + " - Created: " + user.getCreationTime());
+        super("User: " + user.getID() + " | Created: " + new Date(user.getCreationTime()));
         this.user = user;
 
         // Add the user view to the manager
@@ -311,12 +317,9 @@ public class UserView extends TwitterFrame{
      */
     private JPanel getPostView(){
         // The final JPanel to return
-        JPanel postViewPanel = new JPanel(new GridLayout(1, 1, 5, 5));
+        postViewPanel = new JPanel(new GridLayout(1, 1, 5, 5));
         postViewPanel.setBackground(BACKGROUND_COLOR);
-        postViewPanel.setBorder(createTitledBorder(
-                                    "News Feed", Color.BLUE
-                                    )
-                                );
+        setPostViewBorder(postViewPanel);
         postViewPanel.setPreferredSize(this.BIG_PANEL_DIMENSION);
 
         // Update the post text
@@ -332,6 +335,22 @@ public class UserView extends TwitterFrame{
 
         // Return the panel
         return postViewPanel;
+    }
+
+    private void setPostViewBorder(){
+        setPostViewBorder(postViewPanel);
+    }
+
+    private void setPostViewBorder(JPanel postViewPanel){
+        setPostViewBorder(postViewPanel, user.getUpdatedTime());
+    }
+
+    private void setPostViewBorder(JPanel postViewPanel, long lastUpdated){
+        postViewPanel.setBorder(createTitledBorder(
+                                        "News Feed | Last Updated: " + new Date(lastUpdated),
+                                        Color.BLUE
+                                    )
+                                );
     }
 
     /**
@@ -369,6 +388,7 @@ public class UserView extends TwitterFrame{
      * Updates the Post text with the User's news feed
      */
     private void updatePosts(){
+        setPostViewBorder();
         setUpdateableText(this.postsText, getPosts());
     }
 
