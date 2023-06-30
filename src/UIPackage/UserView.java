@@ -26,14 +26,14 @@ import src.UserPackage.ObserverPackage.PosterInterface;
  * The UserView sets up buttons for following other users and displaying followers
  * and Users followed by this user. The User is also able to post messages in the
  * User View and can see messages posted by people they follow
- * 
+ *
  * @author George Matta
  * @version 1.0
  */
 public class UserView extends TwitterFrame{
-    
+
     /**
-     * The User we are viewing 
+     * The User we are viewing
      */
     private User user;
 
@@ -41,7 +41,7 @@ public class UserView extends TwitterFrame{
      * The text pane displaying the posts
      */
     private JTextPane postsText;
-    
+
     /**
      * The text pane displaying the followers
      */
@@ -54,11 +54,11 @@ public class UserView extends TwitterFrame{
 
     /**
      * Taking a user, we create a UserView
-     * 
+     *
      * @param user The User to view
      */
     public UserView(User user){
-        super("User View: " + user.getID());
+        super("User View: " + user.getID() + " - Created: " + user.getCreationTime());
         this.user = user;
 
         // Add the user view to the manager
@@ -85,15 +85,15 @@ public class UserView extends TwitterFrame{
         userViewContainer.add(getFollowView());
         userViewContainer.add(getPostButtons());
         userViewContainer.add(getPostView());
-        
+
         this.add(userViewContainer);
 
         // The Frame should be made viewable and resized in Admin console
     }
 
-    /** 
+    /**
      * Retrieves the User being viewed by this UserView
-     * 
+     *
      * @return The User being viewed
     */
     public User getUser(){
@@ -102,10 +102,10 @@ public class UserView extends TwitterFrame{
 
     /**
      * Retrieves the UserView container that should hold all the panels.
-     * 
-     * We simply set the background color, set the layout (box), 
+     *
+     * We simply set the background color, set the layout (box),
      * and set the border (empty border)
-     * 
+     *
      * @return The UserView JPanel
      */
     private JPanel getUserViewContainer(){
@@ -120,7 +120,7 @@ public class UserView extends TwitterFrame{
     /**
      * Set up the panel holding a text entry for the User's ID to follow and
      * a button to follow them
-     * 
+     *
      * @return The created JPanel
      */
     private JPanel getFollowButtons(){
@@ -132,7 +132,7 @@ public class UserView extends TwitterFrame{
         // Create the text field for entering the ID
         JTextField idTextField = new JTextField();
         idTextField.setFont(new Font(this.DEFAULT_FONT_NAME, 0, 15));
-        
+
         // Create the button for following a user
         JButton followUserButton = new JButton("Follow User");
         followUserButton.addActionListener(
@@ -141,12 +141,12 @@ public class UserView extends TwitterFrame{
                     // Retrieve the typed ID
                     String typedID = getTypedText(idTextField);
                     if  (typedID.length() == 0) return;
-                    
+
                     try{
-                        // Try to follow the user 
+                        // Try to follow the user
                         user.followUser(typedID);
                         updateFollowing();
-                        
+
                         // Update the follow text for all Users involved
                         for(UserView userView : UserViewManager.getInstance().getUserItemSet()){
                             if (UserViewManager.getInstance().compareItems(userView, typedID)){
@@ -155,11 +155,11 @@ public class UserView extends TwitterFrame{
                         }
 
                     } catch (IllegalArgumentException ex) { return; }
-                    
+
                 }
             }
         );
-        
+
         // Add the text and button to the panel
         followButtonsPanel.add(idTextField);
         followButtonsPanel.add(followUserButton);
@@ -171,24 +171,24 @@ public class UserView extends TwitterFrame{
 
     /**
      * Retrieves the JPanel holding the list of Followers and Following
-     * 
+     *
      * @return The FollowView JPanel
      */
     private JPanel getFollowView(){
         // The final panel to return
         JPanel followManagerPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-        
+
         // Set the followers and following text
         updateFollowers();
         updateFollowing();
-        
+
         // Create a noWrap panel for the followers and following
         JPanel followersNoWrapPanel = new JPanel(new BorderLayout());
         followersNoWrapPanel.add(followersText);
 
         JPanel followingNoWrapPanel = new JPanel(new BorderLayout());
         followingNoWrapPanel.add(followingText);
-        
+
         // Create a scrollable pane out of the nowrap panel for both
         JScrollPane followersViewPane = new JScrollPane(followersNoWrapPanel);
         followersViewPane.setBorder(new CompoundBorder(
@@ -201,7 +201,7 @@ public class UserView extends TwitterFrame{
                                 )
                             );
         followersViewPane.setBackground(this.BACKGROUND_COLOR);
-        
+
         JScrollPane followingViewPane = new JScrollPane(followingNoWrapPanel);
         followingViewPane.setBorder(BorderFactory.createEmptyBorder(
                                         5, 0, 5, 5
@@ -228,7 +228,7 @@ public class UserView extends TwitterFrame{
 
     /**
      * Retrieves a String of the Users who follow this User
-     * 
+     *
      * @return The String of followers
      */
     private String getFollowers(){
@@ -241,7 +241,7 @@ public class UserView extends TwitterFrame{
 
     /**
      * Retrieves a String of the Users who are followed by this User
-     * 
+     *
      * @return The String of users being followed by this user
      */
     private String getFollowing(){
@@ -255,7 +255,7 @@ public class UserView extends TwitterFrame{
     /**
      * Set up the panel holding a text entry for the message to post and
      * a button to post it
-     * 
+     *
      * @return The created JPanel
      */
     private JPanel getPostButtons(){
@@ -267,7 +267,7 @@ public class UserView extends TwitterFrame{
         // Create a text field for the message
         JTextField messageText = new JTextField();
         messageText.setFont(new Font(this.DEFAULT_FONT_NAME, 0, 15));
-        
+
         // Create a button to post the message
         JButton postMessageButton = new JButton("Post");
         postMessageButton.addActionListener(
@@ -276,12 +276,12 @@ public class UserView extends TwitterFrame{
                     // Retrieve the typed message
                     String typedText = getTypedText(messageText);
                     if  (typedText.length() == 0) return;
-                    
+
                     try{
                         // Try posting the message and updating the news feeds
                         user.post(typedText);
                         updatePosts();
-                        
+
                         // Update the news feeds for every visible UserView
                         for(UserView userView : UserViewManager.getInstance().getUserItemSet()){
                             if(user.getFollowers().contains(userView.getUser())){
@@ -290,7 +290,7 @@ public class UserView extends TwitterFrame{
                         }
 
                     } catch (IllegalArgumentException ex) { return; }
-                    
+
                 }
             }
         );
@@ -306,7 +306,7 @@ public class UserView extends TwitterFrame{
 
     /**
      * Retrieves a JPanel of the viewable newsFeed
-     * 
+     *
      * @return The Posts JPanel
      */
     private JPanel getPostView(){
@@ -336,9 +336,9 @@ public class UserView extends TwitterFrame{
 
     /**
      * A getter method to retrieve all the viewable posts of a user
-     * 
+     *
      * This is formatted with HTML (break lines for new lines)
-     * 
+     *
      * @return The formatted String of all the viewable posts for this User
      */
     private String getPosts(){
@@ -373,16 +373,16 @@ public class UserView extends TwitterFrame{
     }
 
     /**
-     * Sets the text for a given text pane, formatted with HTMl and using 
+     * Sets the text for a given text pane, formatted with HTMl and using
      * the default font
-     * 
+     *
      * @param textPane THe TextPane to edit
      * @param newText The new text to set
      */
     private void setUpdateableText(JTextPane textPane, String newText){
         textPane.setText(
-                    "<font face = \"" + this.DEFAULT_FONT_NAME + "\">" + 
-                    newText + 
+                    "<font face = \"" + this.DEFAULT_FONT_NAME + "\">" +
+                    newText +
                     "</font>"
                 );
     }

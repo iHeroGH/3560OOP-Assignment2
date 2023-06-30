@@ -9,16 +9,21 @@ import src.UserPackage.ManagerPackage.UserGroupManager;
 /**
  * The UserGroup class implements the UserInterface Composite Component to allow
  * UserGroups to hold other UserGroups and other Users.
- * 
+ *
  * @author George Matta
  * @version 1.0
  */
 public class UserGroup implements UserInterface {
-    
+
     /**
      * The unique ID of the User Group
      */
     private String groupID;
+
+    /**
+     * The creation time of the UserGroup
+     */
+    private long creationTime;
 
     /**
      * The list of UserInterfaces held in this Group
@@ -27,7 +32,7 @@ public class UserGroup implements UserInterface {
 
     /**
      * The default constructor for a UserGroup
-     * 
+     *
      * Initializes a group with a random, valid, ID
      */
     public UserGroup(){
@@ -37,9 +42,9 @@ public class UserGroup implements UserInterface {
 
     /**
      * Initializes a UserGroup with a set ID
-     * 
+     *
      * The ID is validated.
-     * 
+     *
      * @param groupID The Group ID to set for this Group
      */
     public UserGroup(String groupID){
@@ -53,9 +58,19 @@ public class UserGroup implements UserInterface {
      */
     private void initializeUserGroup(){
         UserGroupManager.getInstance().addItem(this);
-        this.users = new ArrayList<UserInterface>(); 
+        users = new ArrayList<UserInterface>();
+        creationTime = System.currentTimeMillis();
     }
-    
+
+    /**
+     * A simple getter method to retrieve the UserGroup object's creation time
+     *
+     * @return The creation time of the UserGroup
+     */
+    public long getCreationTime(){
+        return this.creationTime;
+    }
+
     /**
      * A simple getter method to get the Group's ID
      */
@@ -67,7 +82,7 @@ public class UserGroup implements UserInterface {
     /**
      * Retrieves the Group's ID as a formatted String with initially 0 indentation
      * (would be used for a Root group).
-     * 
+     *
      * @return The value of getFormattedID("")
      */
     public String getFormattedID(){
@@ -76,10 +91,10 @@ public class UserGroup implements UserInterface {
 
     /**
      * Retrieves the Group's ID as a formatted String with a given indentation
-     * 
+     *
      * We format the String like so: indentation- **groupID***, and then
      * an additional level of indentation for UserInterfaces contained in this group
-     * 
+     *
      * @param indentation The initial indentation to use for the Group
      * @return The formatted message of this Group and all its UserInterfaces
      */
@@ -93,7 +108,7 @@ public class UserGroup implements UserInterface {
 
     /**
      * Gets the Tree of all this Group's users (keeping track of identation)
-     * 
+     *
      * @param indentation The intial indentation to use
      * @return The final String of all the UserInterfaces in the list
      */
@@ -112,7 +127,7 @@ public class UserGroup implements UserInterface {
     /**
      * A simple setter to replace the Group ID (remove the old one, validate and set
      * the new one)
-     * 
+     *
      * @param groupID The new Group ID to use
      */
     @Override
@@ -127,7 +142,7 @@ public class UserGroup implements UserInterface {
 
     /**
      * Adds a UserInterface to the list of UserInterfaces held by this Group
-     * 
+     *
      * @param user The UserInterface to add
      * @throws IllegalArgumentException if the UserInterface is related to this Group
      */
@@ -141,10 +156,10 @@ public class UserGroup implements UserInterface {
     }
 
     /**
-     * Defines relation between a Group and a UserInterface as: 
+     * Defines relation between a Group and a UserInterface as:
      * if the IDs are the same, or if any Users in the UserList are related to the
      * other UserInterface
-     * 
+     *
      * @param other The other UserInterface to check
      * @return Whether or not the UserInterfaces are related
      */
@@ -159,15 +174,15 @@ public class UserGroup implements UserInterface {
                 return true;
             }
         }
-        
+
         return false;
     }
 
     /**
      * Accepts an AnalyzerInterface Visitor for analysis purposes
-     * 
+     *
      * Counts this group and visits every UserInterface in the Group
-     * 
+     *
      * @param visitor The AnalyzerInterface Visitor to accept
      */
     @Override
