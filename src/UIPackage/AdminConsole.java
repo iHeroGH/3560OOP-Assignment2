@@ -361,6 +361,13 @@ public class AdminConsole extends TwitterFrame{
         return true;
     }
 
+    /**
+     * Finds the latest updated user and returns their ID.
+     *
+     * If no Users have been created, we return "No Users Found!"
+     *
+     * @return The User ID
+     */
     private String findLastUpdatedUser(){
         long latestTime = 0;
         User latestUpdatedUser = null;
