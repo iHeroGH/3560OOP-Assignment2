@@ -263,7 +263,7 @@ public class AdminConsole extends TwitterFrame{
         getLastUpdatedButton.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent e){
-
+                    showMessageDialog("Last Updated User: " + findLastUpdatedUser());
                 }
             }
         );
@@ -359,6 +359,21 @@ public class AdminConsole extends TwitterFrame{
 
         // Everything is valid
         return true;
+    }
+
+    private String findLastUpdatedUser(){
+        long latestTime = 0;
+        User latestUpdatedUser = null;
+        for(User user : UserManager.getInstance().getUserItemSet()){
+            if (user.getUpdatedTime() > latestTime){
+                latestUpdatedUser = user;
+                latestTime = user.getUpdatedTime();
+            }
+        }
+
+        if (latestUpdatedUser == null) { return "No Users Found!"; }
+
+        return latestUpdatedUser.getID();
     }
 
     /**
